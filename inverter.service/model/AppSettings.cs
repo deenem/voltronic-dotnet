@@ -1,4 +1,4 @@
-namespace inverter.comms.model
+namespace inverter.service.model
 {
     public class AppSettings
     {

@@ -7,7 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using inverter.comms.model;
 
-namespace inverter.comms
+namespace inverter.service
 {
     public class Program
     {

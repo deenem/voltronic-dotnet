@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "inverter.comms", "inverter.comms\inverter.comms.csproj", "{8046AEC3-E57C-47C6-847B-AE1E0B8D8670}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "inverter.service", "inverter.service\inverter.service.csproj", "{8046AEC3-E57C-47C6-847B-AE1E0B8D8670}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "inverter.common", "inverter.common\inverter.common.csproj", "{4E5D21E0-8758-45E3-9E45-3A6B5886578C}"
 EndProject
