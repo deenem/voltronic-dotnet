@@ -18,6 +18,7 @@ namespace inverter.comms
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+              .UseSystemd()
               .ConfigureAppConfiguration((hostingContext, config) =>
               {
                 config.AddJsonFile("appsettings.json", optional: true);
