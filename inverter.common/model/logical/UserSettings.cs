@@ -6,9 +6,15 @@ namespace inverter.common.model.messages
 {
   public class InverterUserSettings
   {
+    public InputVoltageRange InputVoltageRange { get; private set; }
+    public OutputSourcePriority OutputSourcePriority { get; private set; }
+    public int ChargerSourcePriority { get; private set; }
+
     public void Update(DeviceRating deviceRating)
     {
-
+      InputVoltageRange = deviceRating.InputVoltageRange;
+      OutputSourcePriority = deviceRating.OutputSourcePriority;
+      ChargerSourcePriority = deviceRating.ChargerSourcePriority;
     }
     public void Update(DeviceStatus deviceRating)
     {
@@ -23,8 +29,18 @@ namespace inverter.common.model.messages
 
   public class BatteryUserSettings
   {
+
+      public decimal BatteryRechargeVoltage { get; private set; }
+      public decimal BatteryUnderVoltage { get; private set; }
+      public decimal BatteryBulkVoltage { get; private set; }
+      public decimal BatteryFloatVoltage { get; private set; }
+
     public void Update(DeviceRating deviceRating)
     {
+      BatteryRechargeVoltage = deviceRating.BatteryRechargeVoltage;
+      BatteryUnderVoltage = deviceRating.BatteryUnderVoltage;
+      BatteryBulkVoltage = deviceRating.BatteryBulkVoltage;
+      BatteryFloatVoltage = deviceRating.BatteryFloatVoltage;
 
     }
     public void Update(DeviceStatus deviceRating)

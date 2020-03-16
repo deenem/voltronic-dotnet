@@ -6,13 +6,26 @@ namespace inverter.common.model.messages
 {
   public class InverterOperatingProps
   {
+    public decimal GridVoltage { get; private set; }
+    public decimal GridFrequency { get; private set; }
+    public decimal ACOutputVoltage { get; private set; }
+    public decimal ACOutputFrequency { get; private set; }
+    public int ACOutputApparentPower { get; private set; }
+    public int ACOutputActivePower { get; private set; }
+    public int OutputLoadPercent { get; private set; }
+
     public void Update(DeviceRating deviceRating)
     {
-
     }
-    public void Update(DeviceStatus deviceRating)
+    public void Update(DeviceStatus deviceStatus)
     {
-
+      GridVoltage = deviceStatus.GridVoltage;
+      GridFrequency = deviceStatus.GridFrequency;
+      ACOutputVoltage = deviceStatus.ACOutputVoltage;
+      ACOutputFrequency = deviceStatus.ACOutputFrequency;
+      ACOutputApparentPower = deviceStatus.ACOutputApparentPower;
+      ACOutputActivePower = deviceStatus.ACOutputActivePower;
+      OutputLoadPercent = deviceStatus.OutputLoadPercent;
     }
 
     public void Update(DeviceFlags deviceFlags)
@@ -23,13 +36,23 @@ namespace inverter.common.model.messages
 
   public class BatteryOperatingProps
   {
+    public int BusVoltage { get; private set; }
+    public decimal BatteryVoltage { get; private set; }
+    public int BatteryChargingCurrent { get; private set; }
+    public int BatteryCapacity { get; private set; }
+    public int BatteryDischargeCurrent { get; private set; }
+
     public void Update(DeviceRating deviceRating)
     {
 
     }
-    public void Update(DeviceStatus deviceRating)
+    public void Update(DeviceStatus deviceStatus)
     {
-
+      BusVoltage = deviceStatus.BusVoltage;
+      BatteryVoltage = deviceStatus.BatteryVoltage;
+      BatteryChargingCurrent = deviceStatus.BatteryChargingCurrent;
+      BatteryCapacity = deviceStatus.BatteryCapacity;
+      BatteryDischargeCurrent = deviceStatus.BatteryDischargeCurrent;
     }
 
     public void Update(DeviceFlags deviceFlags)
@@ -41,12 +64,19 @@ namespace inverter.common.model.messages
 
   public class SolarOperatingProps
   {
+      public decimal PVInputCurrentForBattery { get; private set; }
+      public decimal PVInputVoltage1 { get; private set; }
+      public decimal BatteryVoltageFromSCC { get; private set; }
+
     public void Update(DeviceRating deviceRating)
     {
 
     }
-    public void Update(DeviceStatus deviceRating)
+    public void Update(DeviceStatus deviceStatus)
     {
+      PVInputCurrentForBattery = deviceStatus.PVInputCurrentForBattery;
+      PVInputVoltage1 = deviceStatus.PVInputVoltage1;
+      BatteryVoltageFromSCC = deviceStatus.BatteryVoltageFromSCC;
 
     }
 
@@ -58,13 +88,16 @@ namespace inverter.common.model.messages
   }
   public class EnviromentOperatingProps
   {
+    public int HeatSinkTemperature { get; private set; }
+
+
     public void Update(DeviceRating deviceRating)
     {
 
     }
-    public void Update(DeviceStatus deviceRating)
+    public void Update(DeviceStatus deviceStatus)
     {
-
+      HeatSinkTemperature = deviceStatus.HeatSinkTemperature;
     }
 
     public void Update(DeviceFlags deviceFlags)

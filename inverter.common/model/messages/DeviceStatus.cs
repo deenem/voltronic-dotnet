@@ -26,7 +26,7 @@ namespace inverter.common.model.messages
     public int HeatSinkTemperature { get; private set; }
     public decimal PVInputCurrentForBattery { get; private set; }
     public decimal PVInputVoltage1 { get; private set; }
-    public decimal BatteryVolatageFromSCC { get; private set; }
+    public decimal BatteryVoltageFromSCC { get; private set; }
     public int BatteryDischargeCurrent { get; private set; }
     public string DeviceStatusFlags { get; private set; }
 
@@ -47,7 +47,7 @@ namespace inverter.common.model.messages
       HeatSinkTemperature = 0;
       PVInputCurrentForBattery = 0;
       PVInputVoltage1 = 0;
-      BatteryVolatageFromSCC = 0;
+      BatteryVoltageFromSCC = 0;
       BatteryDischargeCurrent = 0;
       DeviceStatusFlags = "";
     }
@@ -116,7 +116,7 @@ namespace inverter.common.model.messages
             PVInputVoltage1 = Convert.ToDecimal(double.Parse(values[i], CultureInfo.InvariantCulture));
             break;
           case 14:
-            BatteryVolatageFromSCC = Convert.ToDecimal(double.Parse(values[i], CultureInfo.InvariantCulture));
+            BatteryVoltageFromSCC = Convert.ToDecimal(double.Parse(values[i], CultureInfo.InvariantCulture));
             break;
           case 15:
             BatteryDischargeCurrent = int.Parse(values[i]);

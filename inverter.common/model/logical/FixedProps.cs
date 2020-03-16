@@ -6,8 +6,23 @@ namespace inverter.common.model.messages
 {
   public class InverterFixedProps
   {
+      public decimal GridRatingVoltage { get; private set; }
+      public decimal GridRatingCurrent { get; private set; }
+      public decimal ACOutputRatingVoltage { get; private set; }
+      public decimal ACOutputRatingFrequency { get; private set; }
+      public decimal ACOutputRatingCurrent { get; private set; }
+      public int ACOutputRatingActivePower { get; private set; }
+      public int ACOutputRatingApparentPower { get; private set; }
+
     public void Update(DeviceRating deviceRating)
     {
+      GridRatingVoltage = deviceRating.GridRatingVoltage;
+      GridRatingCurrent = deviceRating.GridRatingCurrent;
+      ACOutputRatingVoltage = deviceRating.ACOutputRatingVoltage;
+      ACOutputRatingFrequency = deviceRating.ACOutputRatingFrequency;
+      ACOutputRatingCurrent = deviceRating.ACOutputRatingCurrent;
+      ACOutputRatingActivePower = deviceRating.ACOutputRatingActivePower;
+      ACOutputRatingApparentPower = deviceRating.ACOutputRatingApparentPower;
 
     }
     public void Update(DeviceStatus deviceRating)
@@ -24,8 +39,12 @@ namespace inverter.common.model.messages
 
   public class BatteryFixedProps
   {
+      public decimal BatteryRatingVoltage { get; private set; }
+
     public void Update(DeviceRating deviceRating)
     {
+      BatteryRatingVoltage = deviceRating.BatteryRatingVoltage;
+
     }
     public void Update(DeviceStatus deviceRating)
     {
@@ -54,9 +73,15 @@ namespace inverter.common.model.messages
   public class EnviromentFixedProps
   {
     public string SerialNumber { get; private set; }
+    public int ParallelMaxNum { get; private set; }
+    public MachineType MachineType { get; private set; }   
+
     public void Update(DeviceRating deviceRating)
     {
+      ParallelMaxNum = deviceRating.ParallelMaxNum;
+      MachineType = deviceRating.MachineType;
     }
+    
     public void Update(DeviceStatus deviceRating)
     {
 

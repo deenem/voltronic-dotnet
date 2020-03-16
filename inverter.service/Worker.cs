@@ -83,7 +83,7 @@ namespace inverter.service
             // UserSettings every 30 secs, will add setting later
             if ((counter % 30 == 0))
             {
-              SendUserSettings(model);
+              SendFixedProps(model);
               counter = 0;
             }
 

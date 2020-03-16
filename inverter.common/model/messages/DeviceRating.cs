@@ -67,8 +67,6 @@ namespace inverter.common.model.messages
     public int PVOKConditionForParallel { get; private set; }
     public string PVPowerBalance { get; private set; }
 
-
-
     public DeviceRating()
     {
 
