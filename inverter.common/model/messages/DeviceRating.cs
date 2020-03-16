@@ -1,9 +1,7 @@
 using System;
-using Newtonsoft.Json;
-using System.Text;
 using System.Globalization;
 
-namespace inverter.common.model
+namespace inverter.common.model.messages
 {
 
   public enum BatteryType
@@ -12,9 +10,9 @@ namespace inverter.common.model
     Flooded = 1,
     User = 2,
     Pylon = 3
-  } 
+  }
 
-  public enum InputVoltageRange 
+  public enum InputVoltageRange
   {
     Appliance = 0,
     UPS = 1
@@ -27,7 +25,7 @@ namespace inverter.common.model
     SBUFirst = 2
   }
 
-  public enum MachineType 
+  public enum MachineType
   {
     GridTie = 0,
     OffGrid = 1,
@@ -35,41 +33,44 @@ namespace inverter.common.model
   }
 
 
-  public class DeviceRating {
+  public class DeviceRating
+  {
 
     public static string SUCCESS = "SUCCESS:QPIRI=>(";
     public static string COMMAND = "QPIRI";
+    public static string NACK = "(NAK";
 
 
-    public decimal GridRatingVoltage {get; private set;}
-    public decimal GridRatingCurrent {get; private set;}
-    public decimal ACOutputRatingVoltage {get; private set;}
-    public decimal ACOutputRatingFrequency {get; private set;}
-    public decimal ACOutputRatingCurrent {get; private set;}
-    public int ACOutputRatingActivePower {get; private set;}
-    public int ACOutputRatingApparentPower {get; private set;}
-    public decimal BatteryRatingVoltage {get; private set;}
-    public decimal BatteryRechargeVoltage {get; private set;}
-    public decimal BatteryUnderVoltage {get; private set;}
-    public decimal BatteryBulkVoltage {get; private set;}
-    public decimal BatteryFloatVoltage {get; private set;}
-    public BatteryType BatteryType {get; private set;}
-    public int CurrentMaxACChargeCurrent {get; private set;}
-    public int CurrentMaxChargeCurrent {get; private set;}
-    public InputVoltageRange InputVoltageRange {get; private set;}
-    public OutputSourcePriority OutputSourcePriority {get; private set;}
-    public int ChargerSourcePriority {get; private set;}
-    public int ParallelMaxNum {get; private set;}
-    public MachineType MachineType {get; private set;}
-    public int Topology {get; private set;}
-    public int OutputMode {get; private set;}
-    public decimal BatteryRedischargeVoltage {get; private set;}
-    public int PVOKConditionForParallel {get; private set;}
-    public string PVPowerBalance {get; private set;}
+    public decimal GridRatingVoltage { get; private set; }
+    public decimal GridRatingCurrent { get; private set; }
+    public decimal ACOutputRatingVoltage { get; private set; }
+    public decimal ACOutputRatingFrequency { get; private set; }
+    public decimal ACOutputRatingCurrent { get; private set; }
+    public int ACOutputRatingActivePower { get; private set; }
+    public int ACOutputRatingApparentPower { get; private set; }
+    public decimal BatteryRatingVoltage { get; private set; }
+    public decimal BatteryRechargeVoltage { get; private set; }
+    public decimal BatteryUnderVoltage { get; private set; }
+    public decimal BatteryBulkVoltage { get; private set; }
+    public decimal BatteryFloatVoltage { get; private set; }
+    public BatteryType BatteryType { get; private set; }
+    public int CurrentMaxACChargeCurrent { get; private set; }
+    public int CurrentMaxChargeCurrent { get; private set; }
+    public InputVoltageRange InputVoltageRange { get; private set; }
+    public OutputSourcePriority OutputSourcePriority { get; private set; }
+    public int ChargerSourcePriority { get; private set; }
+    public int ParallelMaxNum { get; private set; }
+    public MachineType MachineType { get; private set; }
+    public int Topology { get; private set; }
+    public int OutputMode { get; private set; }
+    public decimal BatteryRedischargeVoltage { get; private set; }
+    public int PVOKConditionForParallel { get; private set; }
+    public string PVPowerBalance { get; private set; }
 
 
 
-    public DeviceRating(){
+    public DeviceRating()
+    {
 
       GridRatingVoltage = 0;
       GridRatingCurrent = 0;
@@ -98,16 +99,23 @@ namespace inverter.common.model
       PVPowerBalance = "";
     }
 
-    public DeviceRating(string ResultString) {
-      if (ResultString.StartsWith(SUCCESS)) 
+    public DeviceRating(string ResultString)
+    {
+      if (ResultString.StartsWith(SUCCESS))
         ParseResult(ResultString);
     }
 
-    private void ParseResult(string ResultString) {
+    public static bool CanProcess(string Message)
+    {
+      return (Message.StartsWith(SUCCESS) && !Message.EndsWith(NACK));
+    }
+
+    private void ParseResult(string ResultString)
+    {
       string result = ResultString.Substring(SUCCESS.Length);
       string[] values = result.Split(' ');
 
-      for (int i = 0; i < values.Length; ++ i)
+      for (int i = 0; i < values.Length; ++i)
       {
         switch (i)
         {
@@ -190,11 +198,6 @@ namespace inverter.common.model
       }
     }
 
-    public byte[] toJSON () 
-    {
-      string json = JsonConvert.SerializeObject(this, Formatting.Indented);
-      var bytes = Encoding.UTF8.GetBytes(json);
-      return bytes;
-    }
+
   }
 }
