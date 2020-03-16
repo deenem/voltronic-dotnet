@@ -23,7 +23,7 @@ namespace inverter.common.model
   public enum OutputSourcePriority
   {
     UtilityFirst = 0,
-    SolarFirst = 1.
+    SolarFirst = 1,
     SBUFirst = 2
   }
 

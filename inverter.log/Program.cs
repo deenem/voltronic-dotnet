@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using Microsoft.Extensions.Configuration;
 
 namespace Inverter.Log
 {
@@ -6,7 +8,15 @@ namespace Inverter.Log
     {
         static void Main(string[] args)
         {
-            QueueReader.ReadQueue();
+            var builder = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appSettings.json", optional: true, reloadOnChange: true);
+
+            IConfigurationRoot configuration = builder.Build();
+
+            Console.WriteLine(configuration.GetConnectionString("Storage"));
+
+            //QueueReader.ReadQueue();
         }
     }
 }
