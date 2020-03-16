@@ -4,19 +4,21 @@ using Microsoft.Extensions.Configuration;
 
 namespace Inverter.Log
 {
-    class Program
+  class Program
+  {
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            var builder = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appSettings.json", optional: true, reloadOnChange: true);
+      var builder = new ConfigurationBuilder()
+      .SetBasePath(Directory.GetCurrentDirectory())
+      .AddJsonFile("appSettings.json", optional: true, reloadOnChange: true);
 
-            IConfigurationRoot configuration = builder.Build();
+      IConfigurationRoot configuration = builder.Build();
 
-            Console.WriteLine(configuration.GetConnectionString("Storage"));
+      var queueHost = configuration.GetConnectionString("RabbitMQHost");
+      if (queueHost == null)
+        queueHost = "localhost";
 
-            //QueueReader.ReadQueue();
-        }
+      QueueReader.ReadQueue(queueHost);
     }
+  }
 }

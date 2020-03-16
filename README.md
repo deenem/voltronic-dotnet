@@ -31,8 +31,28 @@ I have just modified the library slightly to pass commands to the inverter on th
 ## Hardware
 You will need a machine which you can plug into the USB port on the inverter. The obvious choice is a Raspberry Pi, but the only real requirement is somethig which can run .Net Core 3.1. 
 
-
 ## Software
+
+
+## Rabbit MQ
+You need to install Rabbit MQ Server somewhere on your server when all components can reach it.
+Clients not access queues from 'localhost' ned to be authenticated so I have used inverter/inverter as the username/password combination throughout . You might want to change this if you plan on exposing the queue on the internet.
+Generally you can change these settings in the appsetting.json file under:
+
+  "ConnectionStrings": {
+    "RabbitMQHost": "10.0.1.54",
+    "RabbitMQUser": "inverter",
+    "RabbitMQPass": "inverter"
+  }
+
+After initial setup you need to create the user ans set premissions as follows
+
+$ sudo rabbitmqctl add_user inverter inverter
+$ sudo rabbitmqctl set_permissions inverter ".*" ".*" ".*"
+
+# libvoltronic
+Before you can run the inverter.comms service you must have a working 
+
 The software has been designed so that different components can run on different machines. 
 You can run all the software components on the same machine, but the minimum required to do this would be a Raspberry Pi 4 (4Gb)
 

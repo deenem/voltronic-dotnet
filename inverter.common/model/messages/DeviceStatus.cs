@@ -3,33 +3,36 @@ using Newtonsoft.Json;
 using System.Text;
 using System.Globalization;
 
-namespace inverter.common.model
+namespace inverter.common.model.messages
 {
-  public class DeviceStatus {
+  public class DeviceStatus
+  {
 
     public static string COMMAND = "QPIGS";
     public static string SUCCESS = "SUCCESS:QPIGS=>(";
+    public static string NACK = "(NAK";
 
-    public decimal GridVoltage{ get; private set;}
-    public decimal GridFrequency{ get; private set;}
-    public decimal ACOutputVoltage{ get; private set;}
-    public decimal ACOutputFrequency{ get; private set;}
-    public int ACOutputApparentPower{ get; private set;}
-    public int ACOutputActivePower{ get; private set;}
-    public int OutputLoadPercent{ get; private set;}
-    public int BusVoltage{ get; private set;}
-    public decimal BatteryVoltage{ get; private set;}
-    public int BatteryChargingCurrent{ get; private set;}
-    public int BatteryCapacity{ get; private set;}
-    public int HeatSinkTemperature{ get; private set;}
-    public decimal PVInputCurrentForBattery{ get; private set;}
-    public decimal PVInputVoltage1{ get; private set;}
-    public decimal BatteryVolatageFromSCC{ get; private set;}
-    public int BatteryDischargeCurrent{ get; private set;}
-    public string DeviceStatusFlags{ get; private set;}
+    public decimal GridVoltage { get; private set; }
+    public decimal GridFrequency { get; private set; }
+    public decimal ACOutputVoltage { get; private set; }
+    public decimal ACOutputFrequency { get; private set; }
+    public int ACOutputApparentPower { get; private set; }
+    public int ACOutputActivePower { get; private set; }
+    public int OutputLoadPercent { get; private set; }
+    public int BusVoltage { get; private set; }
+    public decimal BatteryVoltage { get; private set; }
+    public int BatteryChargingCurrent { get; private set; }
+    public int BatteryCapacity { get; private set; }
+    public int HeatSinkTemperature { get; private set; }
+    public decimal PVInputCurrentForBattery { get; private set; }
+    public decimal PVInputVoltage1 { get; private set; }
+    public decimal BatteryVolatageFromSCC { get; private set; }
+    public int BatteryDischargeCurrent { get; private set; }
+    public string DeviceStatusFlags { get; private set; }
 
 
-    public DeviceStatus() {
+    public DeviceStatus()
+    {
       GridVoltage = 0;
       GridFrequency = 0;
       ACOutputVoltage = 0;
@@ -49,17 +52,24 @@ namespace inverter.common.model
       DeviceStatusFlags = "";
     }
 
-    public DeviceStatus(string ResultString) {
-      if (ResultString.StartsWith(SUCCESS)) 
+    public DeviceStatus(string ResultString)
+    {
+      if (ResultString.StartsWith(SUCCESS))
         ParseResult(ResultString);
     }
 
-    private void ParseResult(string ResultString) {
+    public static bool CanProcess(string Message)
+    {
+      return (Message.StartsWith(SUCCESS) && !Message.EndsWith(NACK));
+    }
+
+    private void ParseResult(string ResultString)
+    {
 
       string result = ResultString.Substring(SUCCESS.Length);
       string[] values = result.Split(' ');
 
-      for (int i = 0; i < values.Length; ++ i)
+      for (int i = 0; i < values.Length; ++i)
       {
         switch (i)
         {
@@ -104,13 +114,13 @@ namespace inverter.common.model
             break;
           case 13:
             PVInputVoltage1 = Convert.ToDecimal(double.Parse(values[i], CultureInfo.InvariantCulture));
-            break;            
+            break;
           case 14:
             BatteryVolatageFromSCC = Convert.ToDecimal(double.Parse(values[i], CultureInfo.InvariantCulture));
-            break;            
+            break;
           case 15:
             BatteryDischargeCurrent = int.Parse(values[i]);
-            break;            
+            break;
           case 16:
             DeviceStatusFlags = values[i];
             break;
@@ -120,11 +130,6 @@ namespace inverter.common.model
       }
     }
 
-    public byte[] toJSON () 
-    {
-      string json = JsonConvert.SerializeObject(this, Formatting.Indented);
-      var bytes = Encoding.UTF8.GetBytes(json);
-      return bytes;
-    }
+
   }
 }
