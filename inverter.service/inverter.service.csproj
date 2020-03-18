@@ -14,4 +14,8 @@
   <ItemGroup>
     <ProjectReference Include="..\inverter.common\inverter.common.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="model\" />
+  </ItemGroup>
 </Project>
