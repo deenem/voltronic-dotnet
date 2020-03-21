@@ -94,7 +94,7 @@ namespace inverter.common.model.messages
   public class UserSettings
   {
 
-    public static string MESSAGE_TYPE = "User Settings";
+    public static string MESSAGE_TYPE = "UserSet";
 
 
     public DateTime EffectiveDate { get; set; }
