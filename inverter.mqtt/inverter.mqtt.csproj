@@ -2,20 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <UserSecretsId>dotnet-inverter.comms-98C237FC-006F-4EE0-AAB8-45A4569B25AB</UserSecretsId>
+    <UserSecretsId>dotnet-inverter.mqtt-1120230C-FC46-4550-AE16-8EFE60167F85</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="M2Mqtt" Version="4.3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="3.1.2" />
     <PackageReference Include="RabbitMQ.Client" Version="5.1.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\inverter.common\inverter.common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="model\" />
   </ItemGroup>
 </Project>

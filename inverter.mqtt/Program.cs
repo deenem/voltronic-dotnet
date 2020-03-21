@@ -1,9 +1,10 @@
+
+using inverter.common.model;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
-using inverter.common.model;
 
-namespace inverter.service
+namespace inverter.mqtt
 {
     public class Program
     {
@@ -14,21 +15,20 @@ namespace inverter.service
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-              .UseSystemd()
-              .ConfigureAppConfiguration((hostingContext, config) =>
-              {
+            .ConfigureAppConfiguration((hostingContext, config) =>
+            {
                 config.AddJsonFile("appsettings.json", optional: true);
                 config.AddEnvironmentVariables();
 
                 if (args != null)
                 {
-                  config.AddCommandLine(args);
+                    config.AddCommandLine(args);
                 }
-              })            
-              .ConfigureServices((hostContext, services) =>
-              {
-                  services.AddHostedService<Worker>();
-                  services.Configure<AppSettings>(hostContext.Configuration.GetSection("AppSettings"));
-              });
+            })
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddHostedService<Worker>();
+                    services.Configure<AppSettings>(hostContext.Configuration.GetSection("AppSettings"));
+                });
     }
 }

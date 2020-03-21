@@ -1,0 +1,10 @@
+﻿{
+  "profiles": {
+    "inverter.mqtt": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
