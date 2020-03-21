@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "inverter.service", "inverter.service\inverter.service.csproj", "{8046AEC3-E57C-47C6-847B-AE1E0B8D8670}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "inverter.service", "inverter.service\inverter.service.csproj", "{8046AEC3-E57C-47C6-847B-AE1E0B8D8670}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "inverter.common", "inverter.common\inverter.common.csproj", "{4E5D21E0-8758-45E3-9E45-3A6B5886578C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "inverter.common", "inverter.common\inverter.common.csproj", "{4E5D21E0-8758-45E3-9E45-3A6B5886578C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "inverter.log", "inverter.log\inverter.log.csproj", "{EAF2E5E9-67C3-422B-8DDC-344A9C9A76E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "inverter.log", "inverter.log\inverter.log.csproj", "{EAF2E5E9-67C3-422B-8DDC-344A9C9A76E2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "inverter.mqtt", "inverter.mqtt\inverter.mqtt.csproj", "{AC5180F1-EB09-4BE0-ACCE-1E721E62B2F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,9 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{8046AEC3-E57C-47C6-847B-AE1E0B8D8670}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -58,5 +57,23 @@ Global
 		{EAF2E5E9-67C3-422B-8DDC-344A9C9A76E2}.Release|x64.Build.0 = Release|Any CPU
 		{EAF2E5E9-67C3-422B-8DDC-344A9C9A76E2}.Release|x86.ActiveCfg = Release|Any CPU
 		{EAF2E5E9-67C3-422B-8DDC-344A9C9A76E2}.Release|x86.Build.0 = Release|Any CPU
+		{AC5180F1-EB09-4BE0-ACCE-1E721E62B2F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC5180F1-EB09-4BE0-ACCE-1E721E62B2F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC5180F1-EB09-4BE0-ACCE-1E721E62B2F1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AC5180F1-EB09-4BE0-ACCE-1E721E62B2F1}.Debug|x64.Build.0 = Debug|Any CPU
+		{AC5180F1-EB09-4BE0-ACCE-1E721E62B2F1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AC5180F1-EB09-4BE0-ACCE-1E721E62B2F1}.Debug|x86.Build.0 = Debug|Any CPU
+		{AC5180F1-EB09-4BE0-ACCE-1E721E62B2F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC5180F1-EB09-4BE0-ACCE-1E721E62B2F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC5180F1-EB09-4BE0-ACCE-1E721E62B2F1}.Release|x64.ActiveCfg = Release|Any CPU
+		{AC5180F1-EB09-4BE0-ACCE-1E721E62B2F1}.Release|x64.Build.0 = Release|Any CPU
+		{AC5180F1-EB09-4BE0-ACCE-1E721E62B2F1}.Release|x86.ActiveCfg = Release|Any CPU
+		{AC5180F1-EB09-4BE0-ACCE-1E721E62B2F1}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {26D61DD5-264F-4722-9203-65432821B1EE}
 	EndGlobalSection
 EndGlobal

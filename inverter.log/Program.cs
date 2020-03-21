@@ -5,6 +5,8 @@ namespace Inverter.Log
 {
   class Program
   {
+
+    private static QueueReader queueReader = new QueueReader();
     static void Main(string[] args)
     {
       var builder = new ConfigurationBuilder()
@@ -17,7 +19,7 @@ namespace Inverter.Log
       if (queueHost == null)
         queueHost = "localhost";
 
-      QueueReader.ReadQueue(queueHost);
+      Program.queueReader.ReadQueue(queueHost);
     }
   }
 }

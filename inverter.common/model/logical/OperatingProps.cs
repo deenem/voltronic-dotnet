@@ -6,13 +6,13 @@ namespace inverter.common.model.messages
 {
   public class InverterOperatingProps
   {
-    public decimal GridVoltage { get; private set; }
-    public decimal GridFrequency { get; private set; }
-    public decimal ACOutputVoltage { get; private set; }
-    public decimal ACOutputFrequency { get; private set; }
-    public int ACOutputApparentPower { get; private set; }
-    public int ACOutputActivePower { get; private set; }
-    public int OutputLoadPercent { get; private set; }
+    public decimal GridVoltage { get; set; }
+    public decimal GridFrequency { get; set; }
+    public decimal ACOutputVoltage { get; set; }
+    public decimal ACOutputFrequency { get; set; }
+    public int ACOutputApparentPower { get; set; }
+    public int ACOutputActivePower { get; set; }
+    public int OutputLoadPercent { get; set; }
 
     public void Update(DeviceRating deviceRating)
     {
@@ -36,11 +36,11 @@ namespace inverter.common.model.messages
 
   public class BatteryOperatingProps
   {
-    public int BusVoltage { get; private set; }
-    public decimal BatteryVoltage { get; private set; }
-    public int BatteryChargingCurrent { get; private set; }
-    public int BatteryCapacity { get; private set; }
-    public int BatteryDischargeCurrent { get; private set; }
+    public int BusVoltage { get; set; }
+    public decimal BatteryVoltage { get; set; }
+    public int BatteryChargingCurrent { get; set; }
+    public int BatteryCapacity { get; set; }
+    public int BatteryDischargeCurrent { get; set; }
 
     public void Update(DeviceRating deviceRating)
     {
@@ -64,9 +64,9 @@ namespace inverter.common.model.messages
 
   public class SolarOperatingProps
   {
-      public decimal PVInputCurrentForBattery { get; private set; }
-      public decimal PVInputVoltage1 { get; private set; }
-      public decimal BatteryVoltageFromSCC { get; private set; }
+    public decimal PVInputCurrentForBattery { get; set; }
+    public decimal PVInputVoltage1 { get; set; }
+    public decimal BatteryVoltageFromSCC { get; set; }
 
     public void Update(DeviceRating deviceRating)
     {
@@ -88,7 +88,7 @@ namespace inverter.common.model.messages
   }
   public class EnviromentOperatingProps
   {
-    public int HeatSinkTemperature { get; private set; }
+    public int HeatSinkTemperature { get; set; }
 
 
     public void Update(DeviceRating deviceRating)
@@ -114,10 +114,10 @@ namespace inverter.common.model.messages
 
 
     public DateTime EffectiveDate { get; set; }
-    public InverterOperatingProps inverter { get; private set; }
-    public BatteryOperatingProps battery { get; private set; }
-    public SolarOperatingProps solar { get; private set; }
-    public EnviromentOperatingProps enviroment { get; private set; }
+    public InverterOperatingProps inverter { get; set; }
+    public BatteryOperatingProps battery { get; set; }
+    public SolarOperatingProps solar { get; set; }
+    public EnviromentOperatingProps enviroment { get; set; }
 
     public OperatingProps()
     {

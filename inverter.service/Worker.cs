@@ -1,21 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+using inverter.common.model;
+using inverter.common.model.messages;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using RabbitMQ.Client;
-using System.Text;
-using System.IO;
-using System.Diagnostics;
 using Microsoft.Extensions.Options;
-using inverter.service.model;
-using inverter.common.model.messages;
-
+using RabbitMQ.Client;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace inverter.service
 {
-  public class Worker : BackgroundService
+    public class Worker : BackgroundService
   {
     private readonly ILogger<Worker> _logger;
     private readonly IOptions<AppSettings> _appConfig;
@@ -38,7 +35,7 @@ namespace inverter.service
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-      var factory = new ConnectionFactory() { HostName = _appConfig.Value.RabbitMQHost };
+      var factory = new ConnectionFactory() { HostName = _appConfig.Value.RabbitMQ.server };
       using (var connection = factory.CreateConnection())
       {
         using (var model = connection.CreateModel())
