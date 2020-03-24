@@ -7,14 +7,12 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System.Text;
 using inverter.common.model.messages;
+using uPLibrary.Networking.M2Mqtt.Messages;
 
 namespace inverter.mqtt
 {
-
     public class MqttWorker
     {
-
-
         public string[,] sensorValues = new string[,] {
             { "AC_grid_voltage","V" ,"power-plug" },
             { "AC_out_voltage","V","power-plug" },
@@ -24,7 +22,7 @@ namespace inverter.mqtt
             { "PV_in_watthour","Wh","solar-panel-large" },
             { "SCC_voltage","V","current-dc" },
             { "load_pct","%","brightness-percent" },
-            { "load_watt", "w", "chart-bell-curve" },
+            { "load_watt", "W", "chart-bell-curve" },
             { "load_watthour","Wh","chart-bell-curve" },
             { "load_va","VA","chart-bell-curve" },
             { "bus_voltage","V","details" },
@@ -33,19 +31,15 @@ namespace inverter.mqtt
             { "battery_voltage","V","battery-outline" },
             { "battery_charge_current","A","current-dc" },
             { "battery_discharge_current","A","current-dc" }
-
         };
 
         private readonly ILogger<Worker> _logger;
-        private AppSettings _appSettings;
-
         private MQTT config;
         public MqttClient MqttClient { get; private set; }
 
         public MqttWorker(ILogger<Worker> logger, AppSettings appSettings)
         {
             _logger = logger;
-            _appSettings = appSettings;
             config = appSettings.MQTT;
             MqttClient = new MqttClient(config.server);
         }
@@ -79,17 +73,14 @@ namespace inverter.mqtt
                 try
                 {
                     MqttClient.Connect(clientId, config.username, config.password);
+                    connected = MqttClient.IsConnected;
+                    _logger.Log(LogLevel.Information, "MQTT Conected to to...{0}", config.server);
                 }
                 catch
                 {
                     _logger.Log(LogLevel.Warning, "No connection to...{0}", config.server);
-                }
-                connected = MqttClient.IsConnected;
-                if (!connected)
                     await Task.Delay(10000, stoppingToken);
-                else
-                    _logger.Log(LogLevel.Information, "MQTT Conected to to...{0}", config.server);
-
+                }
             }
 
             // After connect, create sensors
@@ -118,7 +109,8 @@ namespace inverter.mqtt
                     // publish a message on "/home/temperature" topic with QoS 2 
                     MqttClient.Publish(sensorName, Encoding.UTF8.GetBytes(sensorValue));
                 }
-            } else 
+            }
+            else
                 _logger.Log(LogLevel.Information, "Updated paused until connected...{0}", config.server);
 
         }
