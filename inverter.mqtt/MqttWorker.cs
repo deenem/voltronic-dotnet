@@ -47,18 +47,17 @@ namespace inverter.mqtt
             _logger = logger;
             _appSettings = appSettings;
             config = appSettings.MQTT;
+            MqttClient = new MqttClient(config.server);
         }
         public async Task ConnectMQTT(CancellationToken stoppingToken)
         {
-            var config = _appSettings.MQTT;
-            MqttClient = new MqttClient(config.server);
-
             MqttClient.ConnectionClosed += async (sender, e) =>
             {
-                await ConnectAndInitialiseMQTT(stoppingToken, MqttClient);
+                _logger.Log(LogLevel.Information, "Connection Closed.. {0}", config.server);
+                await ConnectAndInitialiseMQTT(stoppingToken);
             };
 
-            await ConnectAndInitialiseMQTT(stoppingToken, MqttClient);
+            await ConnectAndInitialiseMQTT(stoppingToken);
 
         }
 
@@ -69,23 +68,23 @@ namespace inverter.mqtt
             if (MqttClient.IsConnected)
                 MqttClient.Disconnect();
         }
-        private async Task ConnectAndInitialiseMQTT(CancellationToken stoppingToken, MqttClient mqttClient)
+
+        private async Task ConnectAndInitialiseMQTT(CancellationToken stoppingToken)
         {
             string clientId = Environment.GetEnvironmentVariable("COMPUTERNAME");
 
-
-            var connected = mqttClient.IsConnected;
+            var connected = MqttClient.IsConnected;
             while (!connected && !stoppingToken.IsCancellationRequested)
             {
                 try
                 {
-                    mqttClient.Connect(clientId, config.username, config.password);
+                    MqttClient.Connect(clientId, config.username, config.password);
                 }
                 catch
                 {
                     _logger.Log(LogLevel.Warning, "No connection to...{0}", config.server);
                 }
-                connected = mqttClient.IsConnected;
+                connected = MqttClient.IsConnected;
                 if (!connected)
                     await Task.Delay(10000, stoppingToken);
                 else
@@ -93,9 +92,10 @@ namespace inverter.mqtt
 
             }
 
+            // After connect, create sensors
             string sensorName = $"{config.topic}/sensor/{config.devicename}/config";
             string sensorMsg = $"{{\"name\": \"{config.devicename}\",\"state_topic\": \"{config.topic}/sensor/{config.devicename}\"}}";
-            mqttClient.Publish(sensorName, Encoding.UTF8.GetBytes(sensorMsg));
+            MqttClient.Publish(sensorName, Encoding.UTF8.GetBytes(sensorMsg));
 
             for (int i = 0; i < sensorValues.GetLength(0); ++i)
             {
@@ -103,19 +103,24 @@ namespace inverter.mqtt
 
                 sensorName = $"{config.topic}/sensor/{config.devicename}_{sensorValues[i, 0]}/config";
                 sensorMsg = $"{{\"name\": \"{config.devicename}_{sensorValues[i, 0]}\",\"unit_of_measurement\": \"{sensorValues[i, 1]}\",\"state_topic\": \"{config.topic}/sensor/{config.devicename}_{sensorValues[i, 0]}\",\"icon\": \"mdi:{sensorValues[0, 2]}\"}}";
-                mqttClient.Publish(sensorName, Encoding.UTF8.GetBytes(sensorMsg));
+                MqttClient.Publish(sensorName, Encoding.UTF8.GetBytes(sensorMsg));
             }
         }
 
         public void Update(OperatingProps opProps)
         {
-            for (int i = 0; i < sensorValues.GetLength(0); ++i)
+            if (MqttClient.IsConnected)
             {
-                string sensorName = $"{config.topic}/sensor/{config.devicename}_{sensorValues[i, 0]}";
-                string sensorValue = SensorValue(opProps, sensorValues[i, 0]);
-                // publish a message on "/home/temperature" topic with QoS 2 
-                MqttClient.Publish(sensorName, Encoding.UTF8.GetBytes(sensorValue));
-            }
+                for (int i = 0; i < sensorValues.GetLength(0); ++i)
+                {
+                    string sensorName = $"{config.topic}/sensor/{config.devicename}_{sensorValues[i, 0]}";
+                    string sensorValue = SensorValue(opProps, sensorValues[i, 0]);
+                    // publish a message on "/home/temperature" topic with QoS 2 
+                    MqttClient.Publish(sensorName, Encoding.UTF8.GetBytes(sensorValue));
+                }
+            } else 
+                _logger.Log(LogLevel.Information, "Updated paused until connected...{0}", config.server);
+
         }
 
         private string SensorValue(OperatingProps opProps, string sensorName)

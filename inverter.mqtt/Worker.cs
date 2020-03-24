@@ -80,23 +80,20 @@ namespace inverter.mqtt
                 {
                     byte[] b = (byte[])props.Headers[key];
                     msgType = Encoding.Default.GetString(b);
-                    //Console.WriteLine(" Header {0}:{1}", key, msgType);
                 }
             }
             var body = ea.Body;
             var message = Encoding.UTF8.GetString(body);
-            //Console.WriteLine(" [x] Received {0}", message);
 
             if (msgType == "OpProp")
             {
-
                 if (mqttWorker.MqttClient.IsConnected)
                 {
-
                     OperatingProps opProps = JsonConvert.DeserializeObject<OperatingProps>(message);
-
                     mqttWorker.Update(opProps);
                 }
+                else
+                    _logger.LogWarning("No Connection to Mqtt");
             }
         }
     }
