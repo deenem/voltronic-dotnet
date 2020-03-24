@@ -1,6 +1,8 @@
 # voltronic-dotnet
 .Net Core 3.1 based system to control the Voltronic class of inverters
 
+This project is definately at an Alpha stage. If you are interested in contrubutin or testing please contact me and I will assist
+
 ## Objective 
 The Voltronic group of inverters (MKS, VM and King) are re-branded under many names, Axpert. MPP, Infinisolar, Mecer, Kodak and RCT to mention a few. 
 After installing an RCT VM III 5K inverter and Pylontech US3000 battery in my home I was interested in developing software to interface with the USB port on the inverter. 

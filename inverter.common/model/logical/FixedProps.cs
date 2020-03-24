@@ -95,7 +95,7 @@ namespace inverter.common.model.messages
   public class FixedProps
   {
 
-    public static string MESSAGE_TYPE = "Fixed Properties";
+    public static string MESSAGE_TYPE = "FixProp";
 
     public DateTime EffectiveDate { get; set; }
     public InverterFixedProps inverter { get; private set; }

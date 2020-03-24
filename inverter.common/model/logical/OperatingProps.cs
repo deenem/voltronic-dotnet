@@ -110,7 +110,7 @@ namespace inverter.common.model.messages
 
   public class OperatingProps
   {
-    public static string MESSAGE_TYPE = "Operating Properties";
+    public static string MESSAGE_TYPE = "OpProp";
 
 
     public DateTime EffectiveDate { get; set; }

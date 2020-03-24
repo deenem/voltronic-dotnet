@@ -21,6 +21,11 @@ namespace inverter.service
     private static UserSettings userSettings = new UserSettings();
     private static OperatingProps operatingProps = new OperatingProps();
 
+    private int cyclePeriod = 1000; //milliseconds
+    private int fixedPropPeriod = 60; // send every 10 periods
+    private int userSettingsPeriod = 10; // send every 3 periods
+    private int operatingPropsPeriod = 1; // send every period
+
     public Worker(ILogger<Worker> logger, IOptions<AppSettings> appConfig)
 
     {
@@ -43,12 +48,17 @@ namespace inverter.service
 
 
           int counter = 0;
+          
+          var rating = QueryDeviceRating();
+          var flags = QueryDeviceFlags();
+          var status = QueryDeviceStatus();
+          
           while (!stoppingToken.IsCancellationRequested)
           {
 
-            var status = QueryDeviceStatus();
-            var rating = QueuryDeviceRating();
-            var flags = QueryDeviceFlags();
+            //var status = QueryDeviceStatus();
+            //var rating = QueuryDeviceRating();
+            //var flags = QueryDeviceFlags();
 
             if (status != null)
             {
@@ -75,18 +85,22 @@ namespace inverter.service
             // always send Operating Props
             SendOperatingProps(model);
             // UserSettings every 10 secs
-            if ((counter % 10 == 0))
+            if ((counter % userSettingsPeriod == 0))
               SendUserSettings(model);
             // UserSettings every 30 secs, will add setting later
-            if ((counter % 30 == 0))
+            if ((counter % fixedPropPeriod == 0))
             {
               SendFixedProps(model);
               counter = 0;
             }
 
-            counter += 1;
+            if ((counter > fixedPropPeriod) && (counter > userSettingsPeriod))
+              counter = 0;
 
-            await Task.Delay(1000, stoppingToken);
+            counter += 1;
+            
+            status = QueryDeviceStatus();
+            await Task.Delay(cyclePeriod, stoppingToken);
           }
         }
       }
@@ -97,6 +111,7 @@ namespace inverter.service
       IBasicProperties props = model.CreateBasicProperties();
       props.ContentType = "application/json";
       props.DeliveryMode = 2;
+      props.Expiration = $"{(fixedPropPeriod + 3) * cyclePeriod }";
       props.Headers = new Dictionary<string, object>();
       props.Headers.Add("type", FixedProps.MESSAGE_TYPE);
 
@@ -106,13 +121,16 @@ namespace inverter.service
           basicProperties: props,
           body: fixedProps.toJSON());
     }
+
     private void SendUserSettings(IModel model)
     {
       IBasicProperties props = model.CreateBasicProperties();
       props.ContentType = "application/json";
       props.DeliveryMode = 2;
+      props.Expiration = $"{(userSettingsPeriod + 3) * cyclePeriod }";
+
       props.Headers = new Dictionary<string, object>();
-      props.Headers.Add("command", UserSettings.MESSAGE_TYPE);
+      props.Headers.Add("type", UserSettings.MESSAGE_TYPE);
 
 
       model.BasicPublish(exchange: "",
@@ -120,13 +138,16 @@ namespace inverter.service
           basicProperties: props,
           body: userSettings.toJSON());
     }
+
     private void SendOperatingProps(IModel model)
     {
       IBasicProperties props = model.CreateBasicProperties();
       props.ContentType = "application/json";
       props.DeliveryMode = 2;
+      props.Expiration = $"{(operatingPropsPeriod + 3) * cyclePeriod }";
+
       props.Headers = new Dictionary<string, object>();
-      props.Headers.Add("command", OperatingProps.MESSAGE_TYPE);
+      props.Headers.Add("type", OperatingProps.MESSAGE_TYPE);
 
 
       model.BasicPublish(exchange: "",
@@ -147,7 +168,7 @@ namespace inverter.service
 
     }
 
-    private DeviceRating QueuryDeviceRating()
+    private DeviceRating QueryDeviceRating()
     {
       string message = SendCommand(DeviceRating.COMMAND);
 

@@ -1,0 +1,16 @@
+[Unit]
+Description=Inverter service
+Wants=rabbitmq-server.target
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=pi
+WorkingDirectory=/home/pi/Source/voltronic-dotnet/inverter.service/bin/Debug/netcoreapp3.1/
+ExecStart=/usr/bin/env /home/pi/Source/voltronic-dotnet/inverter.service/bin/Debug/netcoreapp3.1/inverter.service
+
+[Install]
+WantedBy=multi-user.target
