@@ -99,7 +99,7 @@ namespace inverter.common.model.messages
 
     public DeviceRating(string ResultString)
     {
-      if (ResultString.StartsWith(SUCCESS))
+      if (Message.StartsWith(SUCCESS) && !Message.EndsWith(NACK))
         ParseResult(ResultString);
     }
 

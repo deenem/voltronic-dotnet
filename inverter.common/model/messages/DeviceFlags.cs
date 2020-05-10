@@ -24,12 +24,23 @@ namespace inverter.common.model.messages
 
     public DeviceFlags(string QFLAGSResult)
     {
-
+      if (Message.StartsWith(SUCCESS) && !Message.EndsWith(NACK))
+        ParseResult(ResultString);
     }
 
     public static bool CanProcess(string Message)
     {
       return (Message.StartsWith(SUCCESS) && !Message.EndsWith(NACK));
+    }
+
+    private void ParseResult(string ResultString){
+
+      bool enabledFlags = false;
+      bool disabledFlags = false;
+
+      for (int i = o; i < ResultString.len)
+      // EkxyzDabjuv
+
     }
   }
 }
