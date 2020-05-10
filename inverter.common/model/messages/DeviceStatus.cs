@@ -52,10 +52,10 @@ namespace inverter.common.model.messages
       DeviceStatusFlags = "";
     }
 
-    public DeviceStatus(string ResultString)
+    public DeviceStatus(string Message)
     {
-      if (ResultString.StartsWith(SUCCESS))
-        ParseResult(ResultString);
+      if (Message.StartsWith(SUCCESS) && !Message.EndsWith(NACK))
+        ParseResult(Message);
     }
 
     public static bool CanProcess(string Message)

@@ -30,10 +30,10 @@ namespace inverter.common.model.messages
   public class BatteryUserSettings
   {
 
-      public decimal BatteryRechargeVoltage { get; private set; }
-      public decimal BatteryUnderVoltage { get; private set; }
-      public decimal BatteryBulkVoltage { get; private set; }
-      public decimal BatteryFloatVoltage { get; private set; }
+    public decimal BatteryRechargeVoltage { get; private set; }
+    public decimal BatteryUnderVoltage { get; private set; }
+    public decimal BatteryBulkVoltage { get; private set; }
+    public decimal BatteryFloatVoltage { get; private set; }
 
     public void Update(DeviceRating deviceRating)
     {
@@ -74,6 +74,16 @@ namespace inverter.common.model.messages
   }
   public class EnviromentUserSettings
   {
+    public bool Buzzer;
+    public bool OverloadBypass;
+    public bool PowerSaving;
+    public bool DisplayTimeout;
+    public bool OverloadRestart;
+    public bool OverheatRestart;
+    public bool Backlight;
+    public bool AlarmOnPrimaryInterrupt;
+    public bool FaultCodeRecord;
+
     public void Update(DeviceRating deviceRating)
     {
 
@@ -85,10 +95,16 @@ namespace inverter.common.model.messages
 
     public void Update(DeviceFlags deviceFlags)
     {
-
+      this.Buzzer = deviceFlags.Buzzer;
+      this.Backlight = deviceFlags.Backlight;
+      this.OverloadBypass = deviceFlags.OverloadBypass;
+      this.PowerSaving = deviceFlags.PowerSaving;
+      this.DisplayTimeout = deviceFlags.DisplayTimeout;
+      this.OverloadRestart = deviceFlags.OverloadRestart;
+      this.OverheatRestart = deviceFlags.OverheatRestart;
+      this.AlarmOnPrimaryInterrupt = deviceFlags.AlarmOnPrimaryInterrupt;
+      this.FaultCodeRecord = deviceFlags.FaultCodeRecord;
     }
-
-
   }
 
   public class UserSettings

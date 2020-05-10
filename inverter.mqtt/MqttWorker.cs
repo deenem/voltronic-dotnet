@@ -72,6 +72,7 @@ namespace inverter.mqtt
             {
                 try
                 {
+                    
                     MqttClient.Connect(clientId, config.username, config.password);
                     connected = MqttClient.IsConnected;
                     _logger.Log(LogLevel.Information, "MQTT Conected to to...{0}", config.server);

@@ -22,10 +22,10 @@ namespace inverter.common.model.messages
 
     }
 
-    public DeviceFlags(string QFLAGSResult)
+    public DeviceFlags(string Message)
     {
       if (Message.StartsWith(SUCCESS) && !Message.EndsWith(NACK))
-        ParseResult(ResultString);
+        ParseResult(Message);
     }
 
     public static bool CanProcess(string Message)
@@ -33,12 +33,29 @@ namespace inverter.common.model.messages
       return (Message.StartsWith(SUCCESS) && !Message.EndsWith(NACK));
     }
 
-    private void ParseResult(string ResultString){
+    private void ParseResult(string ResultString)
+    {
 
-      bool enabledFlags = false;
-      bool disabledFlags = false;
+      //EkxyzDabjuv
+      bool isEnabled = false;
+      ResultString = ResultString.ToLower();
 
-      for (int i = o; i < ResultString.len)
+      for (int i = 0; i < ResultString.Length; ++i)
+      {
+
+        char ch = ResultString[i];
+        if (ch == 'e') isEnabled = true;
+        else if (ch == 'd') isEnabled = false;
+        else if (ch == 'k') DisplayTimeout = isEnabled;
+        else if (ch == 'x') Backlight = isEnabled;
+        else if (ch == 'y') AlarmOnPrimaryInterrupt = isEnabled;
+        else if (ch == 'z') FaultCodeRecord = isEnabled;
+        else if (ch == 'a') Buzzer = isEnabled;
+        else if (ch == 'b') OverloadBypass = isEnabled;
+        else if (ch == 'j') PowerSaving = isEnabled;
+        else if (ch == 'u') OverloadRestart = isEnabled;
+        else if (ch == 'v') OverheatRestart = isEnabled;
+      }
       // EkxyzDabjuv
 
     }
