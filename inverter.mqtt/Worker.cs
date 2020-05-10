@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.Tracing;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace inverter.mqtt
         private IOptions<AppSettings> _appConfig;
         private IConnection rabbitConnection;
         private IModel rabbitModel;
+        private static int counter = 0;
 
         private MqttWorker mqttWorker;
         public Worker(ILogger<Worker> logger, IOptions<AppSettings> appConfig)
@@ -90,7 +92,9 @@ namespace inverter.mqtt
                 if (mqttWorker.MqttClient.IsConnected)
                 {
                     OperatingProps opProps = JsonConvert.DeserializeObject<OperatingProps>(message);
-                    mqttWorker.Update(opProps);
+                    mqttWorker.Update(opProps, counter);
+                    counter += 1;
+                    counter %= 100000;
                 }
                 else
                     _logger.LogWarning("No Connection to Mqtt");
