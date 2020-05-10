@@ -65,23 +65,27 @@ namespace inverter.mqtt
 
         private async Task ConnectAndInitialiseMQTT(CancellationToken stoppingToken)
         {
-            string clientId = Environment.GetEnvironmentVariable("COMPUTERNAME");
+            string clientId = Environment.GetEnvironmentVariable("COMPUTERNAME") + Guid.NewGuid();
 
             var connected = MqttClient.IsConnected;
             while (!connected && !stoppingToken.IsCancellationRequested)
             {
                 try
                 {
-                    
-                    MqttClient.Connect(clientId, config.username, config.password);
+
+                    MqttClient.Connect(clientId, config.username, config.password, true, 10);
                     connected = MqttClient.IsConnected;
                     _logger.Log(LogLevel.Information, "MQTT Conected to to...{0}", config.server);
                 }
                 catch
                 {
                     _logger.Log(LogLevel.Warning, "No connection to...{0}", config.server);
-                    await Task.Delay(10000, stoppingToken);
                 }
+                connected = MqttClient.IsConnected;
+                if (!connected)
+                    await Task.Delay(10000, stoppingToken);
+                else
+                    _logger.Log(LogLevel.Information, "MQTT Conected to to...{0}", config.server);
             }
 
             // After connect, create sensors
