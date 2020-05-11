@@ -12,7 +12,7 @@ public class AverageValueOverTime
     {
         public string valueName { get; set; }
         public TimePeriod timePeriod { get; set; }
-        public decimal updatedValue { get; set; } 
+        public decimal updatedValue { get; set; }
     }
 
     private long minuteCnt = 0, hourCnt = 0, dayCnt = 0;
@@ -23,7 +23,7 @@ public class AverageValueOverTime
 
 
     public AverageValueOverTime(
-        string ValueName, 
+        string ValueName,
         Action<AverageOverTimeUpdate> onPeriodUpdate)
     {
         var now = DateTime.Now;
@@ -50,7 +50,7 @@ public class AverageValueOverTime
 
         minuteCnt += 1;
         hourCnt += 1;
-        dayCnt += 1; 
+        dayCnt += 1;
 
         var now = DateTime.Now;
 
@@ -68,7 +68,7 @@ public class AverageValueOverTime
                 hourAvg = hourCnt = 0;
                 currentHour = now.Hour;
             }
-            if (currentMinute != now.DayOfYear)
+            if (currentDay != now.DayOfYear)
             {
                 onPeriodUpdate(new AverageOverTimeUpdate { timePeriod = TimePeriod.Day, valueName = this.valueName, updatedValue = round(dayAvg) });
                 dayAvg = dayCnt = 0;
@@ -76,5 +76,4 @@ public class AverageValueOverTime
             }
         }
     }
-
 }
