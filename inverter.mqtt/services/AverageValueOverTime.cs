@@ -72,7 +72,7 @@ public class AverageValueOverTime
             {
                 onPeriodUpdate(new AverageOverTimeUpdate { timePeriod = TimePeriod.Day, valueName = this.valueName, updatedValue = round(dayAvg) });
                 dayAvg = dayCnt = 0;
-                currentDay = now.Day;
+                currentDay = now.DayOfYear;
             }
         }
     }
