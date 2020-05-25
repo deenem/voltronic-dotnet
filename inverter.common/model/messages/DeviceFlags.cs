@@ -7,56 +7,55 @@ namespace inverter.common.model.messages
     public static string NACK = "(NAK";
 
 
-    public bool Buzzer { get; private set; }
-    public bool OverloadBypass { get; private set; }
-    public bool PowerSaving { get; private set; }
-    public bool DisplayTimeout { get; private set; }
-    public bool OverloadRestart { get; private set; }
-    public bool OverheatRestart { get; private set; }
-    public bool Backlight { get; private set; }
-    public bool AlarmOnPrimaryInterrupt { get; private set; }
-    public bool FaultCodeRecord { get; private set; }
+    public bool Buzzer { get; private set; } //A
+    public bool OverloadBypass { get; private set; } //B
+    public bool PowerSaving { get; private set; } //J
+    public bool DisplayTimeout { get; private set; } //K
+    public bool OverloadRestart { get; private set; } //U 
+    public bool OverheatRestart { get; private set; } //V
+    public bool Backlight { get; private set; } //X
+    public bool AlarmOnPrimaryInterrupt { get; private set; } //Y
+    public bool FaultCodeRecord { get; private set; } //Z
 
     public DeviceFlags()
     {
 
     }
 
-    public DeviceFlags(string Message)
+    public DeviceFlags(string ResultString)
     {
-      if (Message.StartsWith(SUCCESS) && !Message.EndsWith(NACK))
-        ParseResult(Message);
+      if (ResultString.StartsWith(SUCCESS) && !ResultString.EndsWith(NACK))
+        ParseResult(ResultString);
     }
 
-    public static bool CanProcess(string Message)
+    public static bool CanProcess(string ResultString)
     {
-      return (Message.StartsWith(SUCCESS) && !Message.EndsWith(NACK));
+      return (ResultString.StartsWith(SUCCESS) && !ResultString.EndsWith(NACK));
     }
 
     private void ParseResult(string ResultString)
     {
 
+
       //EkxyzDabjuv
-      bool isEnabled = false;
+      bool toggle = true;
       ResultString = ResultString.ToLower();
 
-      for (int i = 0; i < ResultString.Length; ++i)
+      foreach (var ch in ResultString)
       {
 
-        char ch = ResultString[i];
-        if (ch == 'e') isEnabled = true;
-        else if (ch == 'd') isEnabled = false;
-        else if (ch == 'k') DisplayTimeout = isEnabled;
-        else if (ch == 'x') Backlight = isEnabled;
-        else if (ch == 'y') AlarmOnPrimaryInterrupt = isEnabled;
-        else if (ch == 'z') FaultCodeRecord = isEnabled;
-        else if (ch == 'a') Buzzer = isEnabled;
-        else if (ch == 'b') OverloadBypass = isEnabled;
-        else if (ch == 'j') PowerSaving = isEnabled;
-        else if (ch == 'u') OverloadRestart = isEnabled;
-        else if (ch == 'v') OverheatRestart = isEnabled;
+        if (ch == 'e') toggle = true;
+        else if (ch == 'd') toggle = false;
+        else if (ch == 'k') DisplayTimeout = toggle;
+        else if (ch == 'x') Backlight = toggle;
+        else if (ch == 'y') AlarmOnPrimaryInterrupt = toggle;
+        else if (ch == 'z') FaultCodeRecord = toggle;
+        else if (ch == 'a') Buzzer = toggle;
+        else if (ch == 'b') OverloadBypass = toggle;
+        else if (ch == 'j') PowerSaving = toggle;
+        else if (ch == 'u') OverloadRestart = toggle;
+        else if (ch == 'v') OverheatRestart = toggle;
       }
-      // EkxyzDabjuv
 
     }
   }
