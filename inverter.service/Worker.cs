@@ -52,14 +52,10 @@ namespace inverter.service
           var rating = QueryDeviceRating();
           var flags = QueryDeviceFlags();
           var status = QueryDeviceStatus();
+          var mode = QueryDeviceMode();
           
           while (!stoppingToken.IsCancellationRequested)
           {
-
-            //var status = QueryDeviceStatus();
-            //var rating = QueuryDeviceRating();
-            //var flags = QueryDeviceFlags();
-
             if (status != null)
             {
               userSettings.Update(status);
@@ -79,6 +75,10 @@ namespace inverter.service
               userSettings.Update(flags);
               fixedProps.Update(flags);
               operatingProps.Update(flags);
+            }
+            if (mode != null)
+            {
+              operatingProps.Update(mode);
             }
 
 
@@ -181,11 +181,24 @@ namespace inverter.service
 
     private DeviceFlags QueryDeviceFlags()
     {
-      string message = SendCommand("QFLAG");
+      string message = SendCommand(DeviceFlags.COMMAND);
+
       if (DeviceFlags.CanProcess(message))
         return new DeviceFlags(message);
       else
-        _logger.LogInformation($"Error in Command {DeviceRating.COMMAND} : {message}");
+        _logger.LogInformation($"Error in Command {DeviceFlags.COMMAND} : {message}");
+      return null;
+    }
+
+
+    private DeviceMode QueryDeviceMode()
+    {
+      string message = SendCommand(DeviceMode.COMMAND);
+
+      if (DeviceMode.CanProcess(message))
+        return new DeviceMode(message);
+      else
+        _logger.LogInformation($"Error in Command {DeviceMode.COMMAND} : {message}");
       return null;
     }
 

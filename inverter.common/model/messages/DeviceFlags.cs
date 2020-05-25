@@ -7,40 +7,64 @@ namespace inverter.common.model.messages
     public static string NACK = "(NAK";
 
 
-    public bool Buzzer { get; private set; }
-    public bool OverloadBypass { get; private set; }
-    public bool PowerSaving { get; private set; }
-    public bool DisplayTimeout { get; private set; }
-    public bool OverloadRestart { get; private set; }
-    public bool OverheatRestart { get; private set; }
-    public bool Backlight { get; private set; }
-    public bool AlarmOnPrimaryInterrupt { get; private set; }
-    public bool FaultCodeRecord { get; private set; }
+    public bool Buzzer { get; private set; } //A
+    public bool OverloadBypass { get; private set; } //B
+    public bool PowerSaving { get; private set; } //J
+    public bool DisplayTimeout { get; private set; } //K
+    public bool OverloadRestart { get; private set; } //U 
+    public bool OverheatRestart { get; private set; } //V
+    public bool Backlight { get; private set; } //X
+    public bool AlarmOnPrimaryInterrupt { get; private set; } //Y
+    public bool FaultCodeRecord { get; private set; } //Z
 
     public DeviceFlags()
     {
 
     }
 
-    public DeviceFlags(string QFLAGSResult)
+    public DeviceFlags(string ResultString)
     {
-      if (Message.StartsWith(SUCCESS) && !Message.EndsWith(NACK))
+      if (ResultString.StartsWith(SUCCESS) && !ResultString.EndsWith(NACK))
         ParseResult(ResultString);
     }
 
-    public static bool CanProcess(string Message)
+    public static bool CanProcess(string ResultString)
     {
-      return (Message.StartsWith(SUCCESS) && !Message.EndsWith(NACK));
+      return (ResultString.StartsWith(SUCCESS) && !ResultString.EndsWith(NACK));
     }
 
     private void ParseResult(string ResultString){
 
-      bool enabledFlags = false;
-      bool disabledFlags = false;
+      bool toggle  = true;
 
-      for (int i = o; i < ResultString.len)
-      // EkxyzDabjuv
-
+       foreach (var c in ResultString)
+       {
+         switch (c)
+         {
+            case 'D':
+              toggle = false; break;
+            case 'a':
+              Buzzer = toggle; break;
+            case 'b': 
+              OverloadBypass = toggle; break;
+            case 'j':
+              PowerSaving = toggle; break;
+            case 'k':
+              DisplayTimeout = toggle; break;
+            case 'u':
+              OverloadRestart = toggle; break;
+            case 'v':
+              Backlight = toggle; break;
+            case 'x':
+              PowerSaving = toggle; break;
+            case 'y':
+              AlarmOnPrimaryInterrupt = toggle; break;
+            case 'z':
+              FaultCodeRecord = toggle; break;
+            default:
+              break;
+         }
+       }
     }
   }
 }

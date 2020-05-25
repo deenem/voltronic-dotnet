@@ -13,6 +13,7 @@ namespace inverter.common.model.messages
     public int ACOutputApparentPower { get; set; }
     public int ACOutputActivePower { get; set; }
     public int OutputLoadPercent { get; set; }
+    public string Mode {get; set;}
 
     public void Update(DeviceRating deviceRating)
     {
@@ -31,6 +32,11 @@ namespace inverter.common.model.messages
     public void Update(DeviceFlags deviceFlags)
     {
 
+    }
+
+    public void Update(DeviceMode deviceMode)
+    {
+      Mode = deviceMode.deviceModeString;
     }
   }
 
@@ -150,6 +156,12 @@ namespace inverter.common.model.messages
       battery.Update(deviceFlags);
       solar.Update(deviceFlags);
       enviroment.Update(deviceFlags);
+      EffectiveDate = DateTime.Now;
+    }
+
+    public void Update(DeviceMode deviceMode)
+    {
+      inverter.Update(deviceMode);
       EffectiveDate = DateTime.Now;
     }
 

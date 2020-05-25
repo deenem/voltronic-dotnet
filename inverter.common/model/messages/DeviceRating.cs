@@ -99,13 +99,13 @@ namespace inverter.common.model.messages
 
     public DeviceRating(string ResultString)
     {
-      if (Message.StartsWith(SUCCESS) && !Message.EndsWith(NACK))
+      if (ResultString.StartsWith(SUCCESS) && !ResultString.EndsWith(NACK))
         ParseResult(ResultString);
     }
 
-    public static bool CanProcess(string Message)
+    public static bool CanProcess(string ResultString)
     {
-      return (Message.StartsWith(SUCCESS) && !Message.EndsWith(NACK));
+      return (ResultString.StartsWith(SUCCESS) && !ResultString.EndsWith(NACK));
     }
 
     private void ParseResult(string ResultString)
