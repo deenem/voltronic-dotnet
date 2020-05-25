@@ -7,31 +7,40 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System.Text;
 using inverter.common.model.messages;
-using uPLibrary.Networking.M2Mqtt.Messages;
+using System.Globalization;
+using static AverageValueOverTime;
 
 namespace inverter.mqtt
 {
     public class MqttWorker
     {
-        public string[,] sensorValues = new string[,] {
-            { "AC_grid_voltage","V" ,"power-plug" },
-            { "AC_out_voltage","V","power-plug" },
-            { "PV_in_voltage","V","solar-panel-large" },
-            { "PV_in_current","A","solar-panel-large" },
-            { "PV_in_watts","W","solar-panel-large" },
-            { "PV_in_watthour","Wh","solar-panel-large" },
-            { "SCC_voltage","V","current-dc" },
-            { "load_pct","%","brightness-percent" },
-            { "load_watt", "W", "chart-bell-curve" },
-            { "load_watthour","Wh","chart-bell-curve" },
-            { "load_va","VA","chart-bell-curve" },
-            { "bus_voltage","V","details" },
-            { "heatsink_temperature","C","details" },
-            { "battery_capacity","%","battery-outline" },
-            { "battery_voltage","V","battery-outline" },
-            { "battery_charge_current","A","current-dc" },
-            { "battery_discharge_current","A","current-dc" }
+        public class SensorConfig
+        {
+            public string Name { get; set; }
+            public string FriendlyName { get; set; }
+            public string UnitOfMeasure { get; set; }
+            public string IconName { get; set; }
+            public bool HasRunningAverage { get; set; }
+            public int UpdatePeriod { get; set; }
+        }
+
+        private const int periodUpdateCount = 2;
+        public SensorConfig[] sensorValues = new SensorConfig[] {
+            new SensorConfig { Name =  "PV_in_voltage", FriendlyName="Energy - Solar Panel Voltage", UnitOfMeasure = "V", IconName = "solar-panel-large" , HasRunningAverage = false, UpdatePeriod = 10 },
+            new SensorConfig { Name =  "PV_in_current", FriendlyName="Energy - Solar Panel Current", UnitOfMeasure = "A", IconName = "solar-panel-large" , HasRunningAverage = false, UpdatePeriod = 10 },
+            new SensorConfig { Name =  "PV_in_watts", FriendlyName = "Energy - Solar Panel Power", UnitOfMeasure = "W", IconName = "solar-panel-large" , HasRunningAverage = true, UpdatePeriod = 5 },
+            new SensorConfig { Name =  "SCC_voltage", FriendlyName = "Energy - MPTT Charger Voltage", UnitOfMeasure = "V", IconName = "current-dc" , HasRunningAverage = false, UpdatePeriod = 60 },
+            new SensorConfig { Name =  "load_watt",  FriendlyName = "Energy - Inverter Load", UnitOfMeasure = "W", IconName ="chart-bell-curve" , HasRunningAverage = true, UpdatePeriod = 5 },
+            new SensorConfig { Name =  "bus_voltage", FriendlyName = "Energy - Inverter Bus Voltage", UnitOfMeasure = "V",IconName ="details" , HasRunningAverage = false, UpdatePeriod = 60 },
+            new SensorConfig { Name =  "heatsink_temperature", FriendlyName = "Energy - Inverter Temperature", UnitOfMeasure = "C",IconName ="details" , HasRunningAverage = false, UpdatePeriod = 60 },
+            new SensorConfig { Name =  "battery_capacity", FriendlyName = "Energy - Battery Level", UnitOfMeasure = "%",IconName ="battery-outline" , HasRunningAverage = false, UpdatePeriod =  30 },
+            new SensorConfig { Name =  "battery_charge_current", FriendlyName="Energy - Battery Charge Current", UnitOfMeasure = "A",IconName ="current-dc" , HasRunningAverage = false, UpdatePeriod = 120 },
+            new SensorConfig { Name =  "battery_discharge_current", FriendlyName = "Energy - Battery Discharge Current",  UnitOfMeasure = "A", IconName ="current-dc" , HasRunningAverage = false, UpdatePeriod = 120 },
+            new SensorConfig { Name =  "battery_voltage", FriendlyName = "Energy - Battery Voltage",  UnitOfMeasure = "A", IconName ="current-dc" , HasRunningAverage = false, UpdatePeriod = 120 }
         };
+
+        private AverageValueOverTime[] periodUpdates = new AverageValueOverTime[periodUpdateCount];
+
 
         private readonly ILogger<Worker> _logger;
         private MQTT config;
@@ -55,9 +64,11 @@ namespace inverter.mqtt
 
         }
 
+
         public void Disconnect()
         {
             _logger.Log(LogLevel.Warning, "Disconnnecting...{0}", MqttClient.ClientId);
+            periodUpdates = new AverageValueOverTime[periodUpdateCount];
 
             if (MqttClient.IsConnected)
                 MqttClient.Disconnect();
@@ -65,49 +76,101 @@ namespace inverter.mqtt
 
         private async Task ConnectAndInitialiseMQTT(CancellationToken stoppingToken)
         {
-            string clientId = Environment.GetEnvironmentVariable("COMPUTERNAME");
+            string clientId = Environment.GetEnvironmentVariable("COMPUTERNAME") + Guid.NewGuid();
 
             var connected = MqttClient.IsConnected;
             while (!connected && !stoppingToken.IsCancellationRequested)
             {
                 try
                 {
-                    MqttClient.Connect(clientId, config.username, config.password);
+                    MqttClient.Connect(clientId, config.username, config.password, true, 10);
                     connected = MqttClient.IsConnected;
                     _logger.Log(LogLevel.Information, "MQTT Conected to to...{0}", config.server);
                 }
                 catch
                 {
                     _logger.Log(LogLevel.Warning, "No connection to...{0}", config.server);
-                    await Task.Delay(10000, stoppingToken);
                 }
+                connected = MqttClient.IsConnected;
+                if (!connected)
+                    await Task.Delay(10000, stoppingToken);
+                else
+                    _logger.Log(LogLevel.Information, "MQTT Conected to to...{0}", config.server);
             }
 
             // After connect, create sensors
             string sensorName = $"{config.topic}/sensor/{config.devicename}/config";
             string sensorMsg = $"{{\"name\": \"{config.devicename}\",\"state_topic\": \"{config.topic}/sensor/{config.devicename}\"}}";
             MqttClient.Publish(sensorName, Encoding.UTF8.GetBytes(sensorMsg));
+            int iPeriodUpdateId = 0;
 
-            for (int i = 0; i < sensorValues.GetLength(0); ++i)
+            foreach (SensorConfig sensor in sensorValues)
             {
-                _logger.Log(LogLevel.Information, "Item...{0}:{1}:{2}", sensorValues[i, 0], sensorValues[i, 1], sensorValues[i, 2]);
+                _logger.Log(LogLevel.Information, "Item...{0}:{1}:{2}", sensor.Name, sensor.UnitOfMeasure, sensor.IconName);
 
-                sensorName = $"{config.topic}/sensor/{config.devicename}_{sensorValues[i, 0]}/config";
-                sensorMsg = $"{{\"name\": \"{config.devicename}_{sensorValues[i, 0]}\",\"unit_of_measurement\": \"{sensorValues[i, 1]}\",\"state_topic\": \"{config.topic}/sensor/{config.devicename}_{sensorValues[i, 0]}\",\"icon\": \"mdi:{sensorValues[0, 2]}\"}}";
+                if (sensor.HasRunningAverage)
+                {
+                    // will have three values, minute, hour , day
+                    periodUpdates[iPeriodUpdateId] = new AverageValueOverTime(sensor.Name, periodUpdate);
+                    iPeriodUpdateId += 1;
+                    sensorName = $"{config.topic}/sensor/{config.devicename}_{sensor.Name}_min/config";
+                    sensorMsg = $"{{\"name\": \"{sensor.FriendlyName} (last minute)\",\"unit_of_measurement\": \"{sensor.UnitOfMeasure}\",\"state_topic\": \"{config.topic}/sensor/{config.devicename}_{sensor.Name}_min\",\"icon\": \"mdi:{sensor.IconName}\"}}";
+
+                    MqttClient.Publish(sensorName, Encoding.UTF8.GetBytes(sensorMsg));
+
+                    sensorName = $"{config.topic}/sensor/{config.devicename}_{sensor.Name}_hour/config";
+                    sensorMsg = $"{{\"name\": \"{sensor.FriendlyName} (last hour)\",\"unit_of_measurement\": \"{sensor.UnitOfMeasure}\",\"state_topic\": \"{config.topic}/sensor/{config.devicename}_{sensor.Name}_hour\",\"icon\": \"mdi:{sensor.IconName}\"}}";
+                    MqttClient.Publish(sensorName, Encoding.UTF8.GetBytes(sensorMsg));
+
+                    sensorName = $"{config.topic}/sensor/{config.devicename}_{sensor.Name}_day/config";
+                    sensorMsg = $"{{\"name\": \"{sensor.FriendlyName} (last day)\",\"unit_of_measurement\": \"{sensor.UnitOfMeasure}\",\"state_topic\": \"{config.topic}/sensor/{config.devicename}_{sensor.Name}_day\",\"icon\": \"mdi:{sensor.IconName}\"}}";
+                    MqttClient.Publish(sensorName, Encoding.UTF8.GetBytes(sensorMsg));
+                }
+
+                sensorName = $"{config.topic}/sensor/{config.devicename}_{sensor.Name}/config";
+                sensorMsg = $"{{\"name\": \"{sensor.FriendlyName}\",\"unit_of_measurement\": \"{sensor.UnitOfMeasure}\",\"state_topic\": \"{config.topic}/sensor/{config.devicename}_{sensor.Name}\",\"icon\": \"mdi:{sensor.IconName}\"}}";
                 MqttClient.Publish(sensorName, Encoding.UTF8.GetBytes(sensorMsg));
             }
         }
 
-        public void Update(OperatingProps opProps)
+        private void periodUpdate(AverageOverTimeUpdate update)
         {
             if (MqttClient.IsConnected)
             {
-                for (int i = 0; i < sensorValues.GetLength(0); ++i)
+                string sensorName = $"{config.topic}/sensor/{config.devicename}_{update.valueName}";
+
+                if (update.timePeriod == TimePeriod.Minute)
+                    sensorName += "_min";
+                else if (update.timePeriod == TimePeriod.Hour)
+                    sensorName += "_hour";
+                else if (update.timePeriod == TimePeriod.Day)
+                    sensorName += "_day";
+                string sensorValue = update.updatedValue.ToString(CultureInfo.InvariantCulture);
+                MqttClient.Publish(sensorName, Encoding.UTF8.GetBytes(sensorValue));
+
+            }
+        }
+
+        public void Update(OperatingProps opProps, int counter)
+        {
+            if (MqttClient.IsConnected)
+            {
+                int iPeriodUpdateId = 0;
+                foreach (SensorConfig sensor in sensorValues)
                 {
-                    string sensorName = $"{config.topic}/sensor/{config.devicename}_{sensorValues[i, 0]}";
-                    string sensorValue = SensorValue(opProps, sensorValues[i, 0]);
-                    // publish a message on "/home/temperature" topic with QoS 2 
-                    MqttClient.Publish(sensorName, Encoding.UTF8.GetBytes(sensorValue));
+                    string sensorName = $"{config.topic}/sensor/{config.devicename}_{sensor.Name}";
+                    decimal sensorValue = SensorValue(opProps, sensor.Name);
+
+                    if (sensor.HasRunningAverage)
+                    {
+                        periodUpdates[iPeriodUpdateId].addValue(sensorValue);
+                        iPeriodUpdateId += 1;
+                    }
+                    if (counter % sensor.UpdatePeriod == 0)
+                    {
+                        // publish a message on "/home/temperature" topic with QoS 2 
+                        MqttClient.Publish(sensorName, Encoding.UTF8.GetBytes(sensorValue.ToString(CultureInfo.InvariantCulture)));
+                    }
                 }
             }
             else
@@ -115,26 +178,21 @@ namespace inverter.mqtt
 
         }
 
-        private string SensorValue(OperatingProps opProps, string sensorName)
+        private decimal SensorValue(OperatingProps opProps, string sensorName)
         {
-            if (sensorName == sensorValues[0, 0]) return Convert.ToString(opProps.inverter.GridVoltage);
-            if (sensorName == sensorValues[1, 0]) return Convert.ToString(opProps.inverter.ACOutputVoltage);
-            if (sensorName == sensorValues[2, 0]) return Convert.ToString(opProps.solar.PVInputVoltage1);
-            if (sensorName == sensorValues[3, 0]) return Convert.ToString(opProps.solar.PVInputCurrentForBattery);
-            if (sensorName == sensorValues[4, 0]) return "-";
-            if (sensorName == sensorValues[5, 0]) return "-";
-            if (sensorName == sensorValues[6, 0]) return Convert.ToString(opProps.solar.BatteryVoltageFromSCC);
-            if (sensorName == sensorValues[7, 0]) return Convert.ToString(opProps.inverter.OutputLoadPercent);
-            if (sensorName == sensorValues[8, 0]) return Convert.ToString(opProps.inverter.ACOutputActivePower);
-            if (sensorName == sensorValues[9, 0]) return "-";
-            if (sensorName == sensorValues[10, 0]) return Convert.ToString(opProps.inverter.ACOutputApparentPower);
-            if (sensorName == sensorValues[11, 0]) return Convert.ToString(opProps.battery.BusVoltage);
-            if (sensorName == sensorValues[12, 0]) return Convert.ToString(opProps.enviroment.HeatSinkTemperature);
-            if (sensorName == sensorValues[13, 0]) return Convert.ToString(opProps.battery.BatteryCapacity);
-            if (sensorName == sensorValues[14, 0]) return Convert.ToString(opProps.battery.BatteryVoltage);
-            if (sensorName == sensorValues[15, 0]) return Convert.ToString(opProps.battery.BatteryChargingCurrent);
-            if (sensorName == sensorValues[16, 0]) return Convert.ToString(opProps.battery.BatteryDischargeCurrent);
-            return "";
+            if (sensorName == sensorValues[0].Name) return opProps.solar.PVInputVoltage1;
+            if (sensorName == sensorValues[1].Name) return opProps.solar.PVInputCurrentForBattery;
+            if (sensorName == sensorValues[2].Name) return (opProps.solar.PVInputVoltage1 * opProps.solar.PVInputCurrentForBattery);
+            if (sensorName == sensorValues[3].Name) return opProps.solar.BatteryVoltageFromSCC;
+            if (sensorName == sensorValues[4].Name) return opProps.inverter.ACOutputActivePower;
+            if (sensorName == sensorValues[5].Name) return opProps.battery.BusVoltage;
+            if (sensorName == sensorValues[6].Name) return opProps.enviroment.HeatSinkTemperature;
+            if (sensorName == sensorValues[7].Name) return opProps.battery.BatteryCapacity;
+            if (sensorName == sensorValues[8].Name) return opProps.battery.BatteryChargingCurrent;
+            if (sensorName == sensorValues[9].Name) return opProps.battery.BatteryDischargeCurrent;
+            if (sensorName == sensorValues[10].Name) return opProps.battery.BatteryVoltage;
+
+            return 0;
         }
     }
 }
