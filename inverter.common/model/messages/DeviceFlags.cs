@@ -36,56 +36,27 @@ namespace inverter.common.model.messages
     private void ParseResult(string ResultString)
     {
 
+
       //EkxyzDabjuv
-      bool isEnabled = false;
+      bool toggle = true;
       ResultString = ResultString.ToLower();
 
-      for (int i = 0; i < ResultString.Length; ++i)
+      foreach (var ch in ResultString)
       {
 
-        char ch = ResultString[i];
-        if (ch == 'e') isEnabled = true;
-        else if (ch == 'd') isEnabled = false;
-        else if (ch == 'k') DisplayTimeout = isEnabled;
-        else if (ch == 'x') Backlight = isEnabled;
-        else if (ch == 'y') AlarmOnPrimaryInterrupt = isEnabled;
-        else if (ch == 'z') FaultCodeRecord = isEnabled;
-        else if (ch == 'a') Buzzer = isEnabled;
-        else if (ch == 'b') OverloadBypass = isEnabled;
-        else if (ch == 'j') PowerSaving = isEnabled;
-        else if (ch == 'u') OverloadRestart = isEnabled;
-        else if (ch == 'v') OverheatRestart = isEnabled;
+        if (ch == 'e') toggle = true;
+        else if (ch == 'd') toggle = false;
+        else if (ch == 'k') DisplayTimeout = toggle;
+        else if (ch == 'x') Backlight = toggle;
+        else if (ch == 'y') AlarmOnPrimaryInterrupt = toggle;
+        else if (ch == 'z') FaultCodeRecord = toggle;
+        else if (ch == 'a') Buzzer = toggle;
+        else if (ch == 'b') OverloadBypass = toggle;
+        else if (ch == 'j') PowerSaving = toggle;
+        else if (ch == 'u') OverloadRestart = toggle;
+        else if (ch == 'v') OverheatRestart = toggle;
       }
-      // EkxyzDabjuv
 
-       foreach (var c in ResultString)
-       {
-         switch (c)
-         {
-            case 'D':
-              toggle = false; break;
-            case 'a':
-              Buzzer = toggle; break;
-            case 'b': 
-              OverloadBypass = toggle; break;
-            case 'j':
-              PowerSaving = toggle; break;
-            case 'k':
-              DisplayTimeout = toggle; break;
-            case 'u':
-              OverloadRestart = toggle; break;
-            case 'v':
-              Backlight = toggle; break;
-            case 'x':
-              PowerSaving = toggle; break;
-            case 'y':
-              AlarmOnPrimaryInterrupt = toggle; break;
-            case 'z':
-              FaultCodeRecord = toggle; break;
-            default:
-              break;
-         }
-       }
     }
   }
 }

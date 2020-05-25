@@ -8,6 +8,7 @@ using RabbitMQ.Client;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 
 namespace inverter.service.workers
 {
@@ -54,6 +55,7 @@ namespace inverter.service.workers
           var rating = QueryDeviceRating();
           var flags = QueryDeviceFlags();
           var status = QueryDeviceStatus();
+          var mode = QueryDeviceMode();
 
           while (!_cancelToken.IsCancellationRequested)
           {
@@ -81,6 +83,9 @@ namespace inverter.service.workers
                 operatingProps.Update(flags);
               }
 
+              if (mode != null){
+                operatingProps.Update(mode);
+              }
 
               // always send Operating Props
               SendOperatingProps(model);
@@ -154,11 +159,12 @@ namespace inverter.service.workers
       props.Headers = new Dictionary<string, object>();
       props.Headers.Add("type", OperatingProps.MESSAGE_TYPE);
 
+      var bytes = operatingProps.toJSON();
 
       model.BasicPublish(exchange: "",
           routingKey: "inverter",
           basicProperties: props,
-          body: operatingProps.toJSON());
+          body: bytes);
     }
 
     private DeviceStatus QueryDeviceStatus()
@@ -186,11 +192,21 @@ namespace inverter.service.workers
 
     private DeviceFlags QueryDeviceFlags()
     {
-      string message = SendCommand("QFLAG");
+      string message = SendCommand(DeviceFlags.COMMAND);
       if (DeviceFlags.CanProcess(message))
         return new DeviceFlags(message);
       else
-        _logger.LogInformation($"Error in Command {DeviceRating.COMMAND} : {message}");
+        _logger.LogInformation($"Error in Command {DeviceFlags.COMMAND} : {message}");
+      return null;
+    }
+
+    private DeviceMode QueryDeviceMode()
+    {
+      string message = SendCommand(DeviceMode.COMMAND);
+      if (DeviceMode.CanProcess(message))
+        return new DeviceMode(message);
+      else
+        _logger.LogInformation($"Error in Command {DeviceMode.COMMAND} : {message}");
       return null;
     }
 

@@ -97,7 +97,7 @@ namespace inverter.common.model.messages
       PVPowerBalance = "";
     }
 
-    public DeviceRating(string Message)
+    public DeviceRating(string ResultString)
     {
       if (ResultString.StartsWith(SUCCESS) && !ResultString.EndsWith(NACK))
         ParseResult(ResultString);
