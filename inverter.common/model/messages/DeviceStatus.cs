@@ -29,7 +29,10 @@ namespace inverter.common.model.messages
     public decimal BatteryVoltageFromSCC { get; private set; }
     public int BatteryDischargeCurrent { get; private set; }
     public string DeviceStatusFlags { get; private set; }
-
+    public int BatteryVoltageOffset { get; private set;}
+    public int EEPROMVersion { get; private set;}
+    public int PVChargingPower { get; private set;}
+    public string DeviceStatus2 { get; private set;}
 
     public DeviceStatus()
     {
@@ -50,6 +53,10 @@ namespace inverter.common.model.messages
       BatteryVoltageFromSCC = 0;
       BatteryDischargeCurrent = 0;
       DeviceStatusFlags = "";
+      BatteryVoltageOffset = 0;
+      EEPROMVersion = 0;
+      PVChargingPower = 0;
+      DeviceStatus2 = "";
     }
 
     public DeviceStatus(string Message)
@@ -123,6 +130,18 @@ namespace inverter.common.model.messages
             break;
           case 16:
             DeviceStatusFlags = values[i];
+            break;
+          case 17:
+            BatteryVoltageOffset = int.Parse(values[i]);
+            break;
+          case 18:
+            EEPROMVersion = int.Parse(values[i]);
+            break;
+          case 19:
+            PVChargingPower = int.Parse(values[i]);
+            break;
+          case 20:
+            DeviceStatus2 = values[i];
             break;
           default:
             break;

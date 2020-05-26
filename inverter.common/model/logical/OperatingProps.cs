@@ -73,6 +73,7 @@ namespace inverter.common.model.messages
     public decimal PVInputCurrentForBattery { get; set; }
     public decimal PVInputVoltage1 { get; set; }
     public decimal BatteryVoltageFromSCC { get; set; }
+    public int PVChargingPower {get; set;}
 
     public void Update(DeviceRating deviceRating)
     {
@@ -83,7 +84,7 @@ namespace inverter.common.model.messages
       PVInputCurrentForBattery = deviceStatus.PVInputCurrentForBattery;
       PVInputVoltage1 = deviceStatus.PVInputVoltage1;
       BatteryVoltageFromSCC = deviceStatus.BatteryVoltageFromSCC;
-
+      PVChargingPower = deviceStatus.PVChargingPower;
     }
 
     public void Update(DeviceFlags deviceFlags)

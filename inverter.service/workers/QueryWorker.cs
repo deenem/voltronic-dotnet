@@ -103,9 +103,13 @@ namespace inverter.service.workers
                 counter = 0;
 
               counter += 1;
+              Thread.Sleep(cyclePeriod);
 
               status = QueryDeviceStatus();
-              Thread.Sleep(cyclePeriod);
+              flags = QueryDeviceFlags();
+              rating = QueryDeviceRating();
+              mode = QueryDeviceMode();
+
             }
             catch (Exception ex)
             {
@@ -161,6 +165,7 @@ namespace inverter.service.workers
 
       var bytes = operatingProps.toJSON();
 
+      //_logger.LogInformation(Encoding.UTF8.GetString(bytes, 0, bytes.Length));
       model.BasicPublish(exchange: "",
           routingKey: "inverter",
           basicProperties: props,

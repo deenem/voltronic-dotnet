@@ -13,6 +13,7 @@ namespace inverter.common.model.messages
       public decimal ACOutputRatingCurrent { get; private set; }
       public int ACOutputRatingActivePower { get; private set; }
       public int ACOutputRatingApparentPower { get; private set; }
+      public int EEPROMVersion {get; private set;}
 
     public void Update(DeviceRating deviceRating)
     {
@@ -25,9 +26,9 @@ namespace inverter.common.model.messages
       ACOutputRatingApparentPower = deviceRating.ACOutputRatingApparentPower;
 
     }
-    public void Update(DeviceStatus deviceRating)
+    public void Update(DeviceStatus deviceStatus)
     {
-
+      EEPROMVersion = deviceStatus.EEPROMVersion;
     }
 
     public void Update(DeviceFlags deviceFlags)
