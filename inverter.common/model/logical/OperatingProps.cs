@@ -12,7 +12,7 @@ namespace inverter.common.model.messages
     LoadStatus            = 0x00001000,
     ChargingToSteady      = 0x00010000,
     BatteryCharging       = 0x00100000,
-    BatteryCharginSCC     = 0x01000000,
+    BatteryChargingSCC    = 0x01000000,
     BatteryChargingAC     = 0x10000000
   }
   
