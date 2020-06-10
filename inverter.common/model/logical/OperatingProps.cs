@@ -14,6 +14,7 @@ namespace inverter.common.model.messages
     public int ACOutputActivePower { get; set; }
     public int OutputLoadPercent { get; set; }
     public string Mode {get; set;}
+    public DeviceModes ModeId {get; set;}
 
     public void Update(DeviceRating deviceRating)
     {
@@ -37,6 +38,7 @@ namespace inverter.common.model.messages
     public void Update(DeviceMode deviceMode)
     {
       Mode = deviceMode.deviceModeString;
+      ModeId = deviceMode.deviceMode;
     }
   }
 
