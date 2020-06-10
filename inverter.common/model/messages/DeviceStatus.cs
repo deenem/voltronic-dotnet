@@ -28,11 +28,11 @@ namespace inverter.common.model.messages
     public decimal PVInputVoltage1 { get; private set; }
     public decimal BatteryVoltageFromSCC { get; private set; }
     public int BatteryDischargeCurrent { get; private set; }
-    public string DeviceStatusFlags { get; private set; }
+    public int DeviceStatusFlags { get; private set; }
     public int BatteryVoltageOffset { get; private set;}
     public int EEPROMVersion { get; private set;}
     public int PVChargingPower { get; private set;}
-    public string DeviceStatus2 { get; private set;}
+    public int DeviceStatus2 { get; private set;}
 
     public DeviceStatus()
     {
@@ -52,11 +52,11 @@ namespace inverter.common.model.messages
       PVInputVoltage1 = 0;
       BatteryVoltageFromSCC = 0;
       BatteryDischargeCurrent = 0;
-      DeviceStatusFlags = "";
+      DeviceStatusFlags = 0;
       BatteryVoltageOffset = 0;
       EEPROMVersion = 0;
       PVChargingPower = 0;
-      DeviceStatus2 = "";
+      DeviceStatus2 = 0;
     }
 
     public DeviceStatus(string Message)
@@ -70,6 +70,14 @@ namespace inverter.common.model.messages
       return (Message.StartsWith(SUCCESS) && !Message.EndsWith(NACK));
     }
 
+    private int StringFlagsToInt(string input){
+      int result = 0;
+      for (int i = 0; i < input.Length; ++i){
+        if(input[i] != '0') 
+          result += (int)Math.Pow(2, i);
+      }
+      return result;
+    }
     private void ParseResult(string ResultString)
     {
 
@@ -129,7 +137,7 @@ namespace inverter.common.model.messages
             BatteryDischargeCurrent = int.Parse(values[i]);
             break;
           case 16:
-            DeviceStatusFlags = values[i];
+            DeviceStatusFlags = StringFlagsToInt(values[i]);
             break;
           case 17:
             BatteryVoltageOffset = int.Parse(values[i]);
@@ -141,7 +149,7 @@ namespace inverter.common.model.messages
             PVChargingPower = int.Parse(values[i]);
             break;
           case 20:
-            DeviceStatus2 = values[i];
+            DeviceStatus2 = StringFlagsToInt(values[i]);
             break;
           default:
             break;

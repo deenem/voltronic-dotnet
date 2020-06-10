@@ -4,6 +4,25 @@ using System.Text;
 
 namespace inverter.common.model.messages
 {
+  public enum DeviceStatus1Flags 
+  {
+    SBUPriorityVersion    = 0x00000001,
+    ConfigStatus          = 0x00000010,
+    FirmwareVersion       = 0x00000100,
+    LoadStatus            = 0x00001000,
+    ChargingToSteady      = 0x00010000,
+    BatteryCharging       = 0x00100000,
+    BatteryCharginSCC     = 0x01000000,
+    BatteryChargingAC     = 0x10000000
+  }
+  
+  public enum DeviceStatus2Flags 
+  {
+    ChargingToFloat    = 0x00000001,
+    PowerOn            = 0x00000010,
+    Reserved           = 0x00000100,
+  }
+  
   public class InverterOperatingProps
   {
     public decimal GridVoltage { get; set; }
@@ -15,6 +34,8 @@ namespace inverter.common.model.messages
     public int OutputLoadPercent { get; set; }
     public string Mode {get; set;}
     public DeviceModes ModeId {get; set;}
+    public DeviceStatus1Flags DeviceStatus1{get; set;}
+    public DeviceStatus2Flags DeviceStatus2{get; set;}
 
     public void Update(DeviceRating deviceRating)
     {
@@ -28,6 +49,8 @@ namespace inverter.common.model.messages
       ACOutputApparentPower = deviceStatus.ACOutputApparentPower;
       ACOutputActivePower = deviceStatus.ACOutputActivePower;
       OutputLoadPercent = deviceStatus.OutputLoadPercent;
+      DeviceStatus1 = (DeviceStatus1Flags)deviceStatus.DeviceStatusFlags;
+      DeviceStatus2 = (DeviceStatus2Flags)deviceStatus.DeviceStatus2;
     }
 
     public void Update(DeviceFlags deviceFlags)
