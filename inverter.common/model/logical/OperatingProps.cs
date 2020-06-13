@@ -6,21 +6,21 @@ namespace inverter.common.model.messages
 {
   public enum DeviceStatus1Flags 
   {
-    SBUPriorityVersion    = 0x00000001,
-    ConfigStatus          = 0x00000010,
-    FirmwareVersion       = 0x00000100,
-    LoadStatus            = 0x00001000,
-    ChargingToSteady      = 0x00010000,
-    BatteryCharging       = 0x00100000,
-    BatteryChargingSCC    = 0x01000000,
-    BatteryChargingAC     = 0x10000000
+    SBUPriorityVersion    = 0x0001,
+    ConfigStatus          = 0x0002,
+    FirmwareVersion       = 0x0004,
+    LoadStatus            = 0x0008,
+    ChargingToSteady      = 0x0010,
+    BatteryCharging       = 0x0020,
+    BatteryChargingSCC    = 0x0040,
+    BatteryChargingAC     = 0x0080
   }
   
   public enum DeviceStatus2Flags 
   {
-    ChargingToFloat    = 0x00000001,
-    PowerOn            = 0x00000010,
-    Reserved           = 0x00000100,
+    ChargingToFloat    = 0x01,
+    PowerOn            = 0x02,
+    Reserved           = 0x04,
   }
   
   public class InverterOperatingProps

@@ -91,6 +91,7 @@ namespace inverter.mqtt
             {
                 if (mqttWorker.MqttClient.IsConnected)
                 {
+                    _logger.LogInformation(message);
                     OperatingProps opProps = JsonConvert.DeserializeObject<OperatingProps>(message);
                     mqttWorker.Update(opProps, counter);
                     counter += 1;
