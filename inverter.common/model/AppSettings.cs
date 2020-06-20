@@ -17,10 +17,18 @@ namespace inverter.common.model
         public string username { get; set; }
         public string password { get; set; }
     }
+
+    public class Inverter
+    {
+        public int BatteryAmpHours { get; set; }
+        public int WRating { get; set; }
+    }
+
     public class AppSettings
     {
         public string LibVoltronicPath{ get; set; }
         public RabbitMQ RabbitMQ { get; set; }
         public MQTT MQTT { get; set; }
+        public Inverter Inverter { get; set;}
     }
 }

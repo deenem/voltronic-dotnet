@@ -1,0 +1,15 @@
+[Unit]
+Description=Inverter MQTT service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RuntimeMaxSec=6000
+User=donald
+WorkingDirectory=/home/donald/Source/voltronic-dotnet/inverter.mqtt/bin/Debug/netcoreapp3.1/
+ExecStart=/usr/bin/env /home/donald/Source/voltronic-dotnet/inverter.mqtt/bin/Debug/netcoreapp3.1/inverter.mqtt
+
+[Install]
+WantedBy=multi-user.target

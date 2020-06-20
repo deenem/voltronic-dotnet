@@ -1,6 +1,6 @@
 # Installing as a SystemD service on linux
 
-Once you have the inverter.service project runnign from the command line you can install it as a system service
+Once you have the inverter.service project running from the command line you can install it as a system service
 
 The is an example unit file in the setup folder. You shoud just have to change the WorkingDirectory and ExecStart settings
 

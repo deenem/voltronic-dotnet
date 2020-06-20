@@ -23,7 +23,7 @@ namespace inverter.mqtt
             public bool HasRunningAverage { get; set; }
             public int UpdatePeriod { get; set; }
             public string DataType {get; set;}
-           
+
             public string DeviceClass {get; set;}
 
         }
@@ -41,7 +41,9 @@ namespace inverter.mqtt
             new SensorConfig { Name =  "battery_charge_current", FriendlyName="Energy - Battery Charge Current", UnitOfMeasure = "A",IconName ="current-dc" , HasRunningAverage = false, UpdatePeriod = 10 },
             new SensorConfig { Name =  "battery_discharge_current", FriendlyName = "Energy - Battery Discharge Current",  UnitOfMeasure = "A", IconName ="current-dc" , HasRunningAverage = false, UpdatePeriod = 10 },
             new SensorConfig { Name =  "battery_voltage", FriendlyName = "Energy - Battery Voltage",  UnitOfMeasure = "V", IconName ="current-dc" , HasRunningAverage = false, UpdatePeriod = 120 },
-            new SensorConfig { Name =  "inverter_mode", FriendlyName = "Energy - Inverter Mode",  UnitOfMeasure = "", IconName ="current-dc" , HasRunningAverage = false, UpdatePeriod = 30 }
+            new SensorConfig { Name =  "inverter_mode", FriendlyName = "Energy - Inverter Mode",  UnitOfMeasure = "", IconName ="current-dc" , HasRunningAverage = false, UpdatePeriod = 30 },
+            new SensorConfig { Name =  "time_to_charge", FriendlyName = "Energy - Battery Time To Charge ",  UnitOfMeasure = "Minutes", IconName ="timer-sand" , HasRunningAverage = false, UpdatePeriod = 60 },
+            new SensorConfig { Name =  "time_to_discharge", FriendlyName = "Energy - Battery Time To Discharge ",  UnitOfMeasure = "Minutes", IconName ="timer-sand" , HasRunningAverage = false, UpdatePeriod = 60 }
 
         };
 
@@ -50,12 +52,14 @@ namespace inverter.mqtt
 
         private readonly ILogger<Worker> _logger;
         private MQTT config;
+        private Inverter inverterConfig;
         public MqttClient MqttClient { get; private set; }
 
         public MqttWorker(ILogger<Worker> logger, AppSettings appSettings)
         {
             _logger = logger;
             config = appSettings.MQTT;
+            inverterConfig = appSettings.Inverter;
             MqttClient = new MqttClient(config.server);
         }
         public async Task ConnectMQTT(CancellationToken stoppingToken)
@@ -78,6 +82,11 @@ namespace inverter.mqtt
 
             if (MqttClient.IsConnected)
                 MqttClient.Disconnect();
+        }
+
+        private string[] SensorNames() 
+        {
+
         }
 
         private async Task ConnectAndInitialiseMQTT(CancellationToken stoppingToken)
@@ -198,6 +207,32 @@ namespace inverter.mqtt
             if (sensorName == sensorValues[8].Name) return opProps.battery.BatteryChargingCurrent;
             if (sensorName == sensorValues[9].Name) return opProps.battery.BatteryDischargeCurrent;
             if (sensorName == sensorValues[10].Name) return opProps.battery.BatteryVoltage;
+            if (sensorName == sensorValues[12].Name) { 
+                // time to charge. ( 100 - Battery % * Ah) / 
+                if (opProps.battery.BatteryChargingCurrent > 0) {
+
+                    decimal remCap = 1 - ((decimal)opProps.battery.BatteryCapacity / 100);
+                    decimal ahRem = ( remCap * inverterConfig.BatteryAmpHours);
+                    decimal hRem = (ahRem / (decimal)opProps.battery.BatteryChargingCurrent);
+                    decimal minutes = hRem * 60;
+
+                    //_logger.Log(LogLevel.Information, "Charge..{0}:{1}:{2}:{3}", remCap, ahRem, hRem, minutes);
+                    return minutes;
+                } else return 0;
+            }
+            if (sensorName == sensorValues[13].Name) {
+                // time to discharge. ( Battery % * Ah) / 
+                if (opProps.battery.BatteryDischargeCurrent > 0) {
+                    decimal cap = ((decimal)opProps.battery.BatteryCapacity / 100);
+                    decimal ahRem = (cap * inverterConfig.BatteryAmpHours);
+                    decimal hRem = (ahRem / (decimal)opProps.battery.BatteryDischargeCurrent);
+                    decimal minutes = hRem * 60;
+
+                    //_logger.Log(LogLevel.Information, "DisCharge..{0}:{1}:{2}:{3}", minutes, opProps.battery.BatteryCapacity, inverterConfig.BatteryAmpHours, opProps.battery.BatteryDischargeCurrent);
+                    return minutes;
+                } else return 0;
+
+            }
             
 
             return 0;
