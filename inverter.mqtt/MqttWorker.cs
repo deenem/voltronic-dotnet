@@ -58,6 +58,7 @@ namespace inverter.mqtt
             config = appSettings.MQTT;
             MqttClient = new MqttClient(config.server);
         }
+        
         public async Task ConnectMQTT(CancellationToken stoppingToken)
         {
             MqttClient.ConnectionClosed += async (sender, e) =>
@@ -67,7 +68,6 @@ namespace inverter.mqtt
             };
 
             await ConnectAndInitialiseMQTT(stoppingToken);
-
         }
 
 
