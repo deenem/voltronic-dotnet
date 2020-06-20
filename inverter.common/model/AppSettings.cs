@@ -22,6 +22,7 @@ namespace inverter.common.model
     {
         public int BatteryAmpHours { get; set; }
         public int WRating { get; set; }
+        public decimal DoD { get; set; }
     }
 
     public class AppSettings

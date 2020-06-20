@@ -84,11 +84,6 @@ namespace inverter.mqtt
                 MqttClient.Disconnect();
         }
 
-        private string[] SensorNames() 
-        {
-
-        }
-
         private async Task ConnectAndInitialiseMQTT(CancellationToken stoppingToken)
         {
             string clientId = Environment.GetEnvironmentVariable("COMPUTERNAME") + Guid.NewGuid();
@@ -221,9 +216,10 @@ namespace inverter.mqtt
                 } else return 0;
             }
             if (sensorName == sensorValues[13].Name) {
-                // time to discharge. ( Battery % * Ah) / 
+                // time to discharge. ( ( Battery % - (DoD * 100) * Ah) / 
                 if (opProps.battery.BatteryDischargeCurrent > 0) {
-                    decimal cap = ((decimal)opProps.battery.BatteryCapacity / 100);
+                    decimal capRem = opProps.battery.BatteryCapacity - (100 * inverterConfig.DoD);
+                    decimal cap = (capRem / 100);
                     decimal ahRem = (cap * inverterConfig.BatteryAmpHours);
                     decimal hRem = (ahRem / (decimal)opProps.battery.BatteryDischargeCurrent);
                     decimal minutes = hRem * 60;
