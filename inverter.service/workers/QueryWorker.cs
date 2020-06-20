@@ -4,10 +4,9 @@ using System.Threading;
 using Microsoft.Extensions.Logging;
 using inverter.common.model;
 using inverter.common.model.messages;
+using inverter.service.util;
 using RabbitMQ.Client;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Text;
 
 namespace inverter.service.workers
@@ -174,7 +173,7 @@ namespace inverter.service.workers
 
     private DeviceStatus QueryDeviceStatus()
     {
-      string message = SendCommand(DeviceStatus.COMMAND);
+      string message = Command.SendCommand(_appSettings.LibVoltronicPath, DeviceStatus.COMMAND);
 
       if (DeviceStatus.CanProcess(message))
         return new DeviceStatus(message);
@@ -186,7 +185,7 @@ namespace inverter.service.workers
 
     private DeviceRating QueryDeviceRating()
     {
-      string message = SendCommand(DeviceRating.COMMAND);
+      string message = Command.SendCommand(_appSettings.LibVoltronicPath, DeviceRating.COMMAND);
 
       if (DeviceRating.CanProcess(message))
         return new DeviceRating(message);
@@ -197,7 +196,8 @@ namespace inverter.service.workers
 
     private DeviceFlags QueryDeviceFlags()
     {
-      string message = SendCommand(DeviceFlags.COMMAND);
+      string message = Command.SendCommand(_appSettings.LibVoltronicPath, DeviceFlags.COMMAND);
+
       if (DeviceFlags.CanProcess(message))
         return new DeviceFlags(message);
       else
@@ -207,34 +207,12 @@ namespace inverter.service.workers
 
     private DeviceMode QueryDeviceMode()
     {
-      string message = SendCommand(DeviceMode.COMMAND);
+      string message = Command.SendCommand(_appSettings.LibVoltronicPath, DeviceMode.COMMAND);
       if (DeviceMode.CanProcess(message))
         return new DeviceMode(message);
       else
         _logger.LogInformation($"Error in Command {DeviceMode.COMMAND} : {message}");
       return null;
-    }
-
-    private string SendCommand(string cmd)
-    {
-
-      using (Process process = new Process())
-      {
-        process.StartInfo.FileName = _appSettings.LibVoltronicPath;
-        process.StartInfo.Arguments = cmd;
-        process.StartInfo.UseShellExecute = false;
-        process.StartInfo.RedirectStandardOutput = true;
-        process.Start();
-
-        // Synchronously read the standard output of the spawned process. 
-        StreamReader reader = process.StandardOutput;
-        string output = reader.ReadToEnd();
-        process.WaitForExit();
-
-        // Write the redirected output to this application's window.
-        return output;
-
-      }
     }
   }
 }

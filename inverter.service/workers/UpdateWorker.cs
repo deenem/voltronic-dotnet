@@ -7,6 +7,8 @@ using System.IO;
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using inverter.common.model;
+using inverter.service.util;
+
 using uPLibrary.Networking.M2Mqtt;
 using uPLibrary.Networking.M2Mqtt.Messages;
 
@@ -70,28 +72,9 @@ namespace inverter.service.workers
       var byteArray = e.Message;
       string cmd = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
       _logger.Log(LogLevel.Information, "Message Received.. {0}", cmd);
-      string resp = SendCommand(cmd);
+      string resp = Command.SendCommand(_appSettings.LibVoltronicPath, cmd);
+
       _logger.Log(LogLevel.Information, "Response.. {0}", resp);
-    }
-
-    private string SendCommand(string cmd)
-    {
-      using (Process process = new Process())
-      {
-        process.StartInfo.FileName = _appSettings.LibVoltronicPath;
-        process.StartInfo.Arguments = cmd;
-        process.StartInfo.UseShellExecute = false;
-        process.StartInfo.RedirectStandardOutput = true;
-        process.Start();
-
-        // Synchronously read the standard output of the spawned process. 
-        StreamReader reader = process.StandardOutput;
-        string output = reader.ReadToEnd();
-        process.WaitForExit();
-
-        // Write the redirected output to this application's window.
-        return output;
-      }
     }
   }
 }
