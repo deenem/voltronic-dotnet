@@ -30,18 +30,18 @@ namespace inverter.mqtt
 
         private const int periodUpdateCount = 2;
         public SensorConfig[] sensorValues = new SensorConfig[] {
-            new SensorConfig { Name =  "PV_in_voltage", FriendlyName="Energy - Solar Panel Voltage", UnitOfMeasure = "V", IconName = "solar-panel-large" , HasRunningAverage = false, UpdatePeriod = 10 },
-            new SensorConfig { Name =  "PV_in_current", FriendlyName="Energy - Solar Panel Current", UnitOfMeasure = "A", IconName = "solar-panel-large" , HasRunningAverage = false, UpdatePeriod = 10 },
+            new SensorConfig { Name =  "PV_in_voltage", FriendlyName="Energy - Solar Panel Voltage", UnitOfMeasure = "V", IconName = "solar-panel-large" , HasRunningAverage = false, UpdatePeriod = 20 },
+            new SensorConfig { Name =  "PV_in_current", FriendlyName="Energy - Solar Panel Current", UnitOfMeasure = "A", IconName = "solar-panel-large" , HasRunningAverage = false, UpdatePeriod = 20 },
             new SensorConfig { Name =  "PV_in_watts", FriendlyName = "Energy - Solar Panel Power", DeviceClass = "power", UnitOfMeasure = "W", IconName = "solar-panel-large" , HasRunningAverage = true, UpdatePeriod = 5 },
             new SensorConfig { Name =  "SCC_voltage", FriendlyName = "Energy - MPTT Charger Voltage", UnitOfMeasure = "V", IconName = "current-dc" , HasRunningAverage = false, UpdatePeriod = 60 },
             new SensorConfig { Name =  "load_watt",  FriendlyName = "Energy - Inverter Load", UnitOfMeasure = "W", DeviceClass = "power", IconName ="chart-bell-curve" , HasRunningAverage = true, UpdatePeriod = 5 },
             new SensorConfig { Name =  "bus_voltage", FriendlyName = "Energy - Inverter Bus Voltage", UnitOfMeasure = "V",IconName ="details" , HasRunningAverage = false, UpdatePeriod = 60 },
             new SensorConfig { Name =  "heatsink_temperature", FriendlyName = "Energy - Inverter Temperature",DeviceClass = "temperature", UnitOfMeasure = "C",IconName ="details" , HasRunningAverage = false, UpdatePeriod = 60 },
             new SensorConfig { Name =  "battery_capacity", FriendlyName = "Energy - Battery Level",DeviceClass = "battery", UnitOfMeasure = "%",IconName ="battery-outline" , HasRunningAverage = false, UpdatePeriod =  30 },
-            new SensorConfig { Name =  "battery_charge_current", FriendlyName="Energy - Battery Charge Current", UnitOfMeasure = "A",IconName ="current-dc" , HasRunningAverage = false, UpdatePeriod = 120 },
-            new SensorConfig { Name =  "battery_discharge_current", FriendlyName = "Energy - Battery Discharge Current",  UnitOfMeasure = "A", IconName ="current-dc" , HasRunningAverage = false, UpdatePeriod = 120 },
+            new SensorConfig { Name =  "battery_charge_current", FriendlyName="Energy - Battery Charge Current", UnitOfMeasure = "A",IconName ="current-dc" , HasRunningAverage = false, UpdatePeriod = 10 },
+            new SensorConfig { Name =  "battery_discharge_current", FriendlyName = "Energy - Battery Discharge Current",  UnitOfMeasure = "A", IconName ="current-dc" , HasRunningAverage = false, UpdatePeriod = 10 },
             new SensorConfig { Name =  "battery_voltage", FriendlyName = "Energy - Battery Voltage",  UnitOfMeasure = "V", IconName ="current-dc" , HasRunningAverage = false, UpdatePeriod = 120 },
-            new SensorConfig { Name =  "inverter_mode", FriendlyName = "Energy - Inverter Mode",  UnitOfMeasure = "", IconName ="current-dc" , HasRunningAverage = false, UpdatePeriod = 120 }
+            new SensorConfig { Name =  "inverter_mode", FriendlyName = "Energy - Inverter Mode",  UnitOfMeasure = "", IconName ="current-dc" , HasRunningAverage = false, UpdatePeriod = 30 }
 
         };
 
@@ -89,7 +89,7 @@ namespace inverter.mqtt
             {
                 try
                 {
-                    MqttClient.Connect(clientId, config.username, config.password, true, 10);
+                    MqttClient.Connect(clientId, config.username, config.password, true, 3);
                     connected = MqttClient.IsConnected;
                     _logger.Log(LogLevel.Information, "MQTT Conected to to...{0}", config.server);
                 }
@@ -189,7 +189,7 @@ namespace inverter.mqtt
         {
             if (sensorName == sensorValues[0].Name) return opProps.solar.PVInputVoltage1;
             if (sensorName == sensorValues[1].Name) return opProps.solar.PVInputCurrentForBattery;
-            if (sensorName == sensorValues[2].Name) return (opProps.solar.PVInputVoltage1 * opProps.solar.PVInputCurrentForBattery);
+            if (sensorName == sensorValues[2].Name) return opProps.solar.PVChargingPower;
             if (sensorName == sensorValues[3].Name) return opProps.solar.BatteryVoltageFromSCC;
             if (sensorName == sensorValues[4].Name) return opProps.inverter.ACOutputActivePower;
             if (sensorName == sensorValues[5].Name) return opProps.battery.BusVoltage;
@@ -205,7 +205,24 @@ namespace inverter.mqtt
 
         private byte[] SensorValueByte(OperatingProps opProps, string sensorName)
         {
-            if (sensorName == sensorValues[11].Name) return Encoding.UTF8.GetBytes(opProps.inverter.Mode.ToString(CultureInfo.InvariantCulture));
+            if (sensorName == sensorValues[11].Name) {
+                if (opProps.inverter.ModeId == DeviceModes.Battery){
+                    if ((opProps.inverter.DeviceStatus1 & DeviceStatus1Flags.BatteryChargingSCC) == DeviceStatus1Flags.BatteryChargingSCC) {
+                        if ((opProps.battery.BatteryChargingCurrent == 0) && (opProps.battery.BatteryDischargeCurrent == 0))
+                            return Encoding.UTF8.GetBytes("Solar Only");
+                        else
+                            return Encoding.UTF8.GetBytes("Solar And Charging");
+                    }
+                    else if ((opProps.inverter.DeviceStatus1 & DeviceStatus1Flags.BatteryChargingAC) == DeviceStatus1Flags.BatteryChargingAC)
+                        return Encoding.UTF8.GetBytes("Utility Charging");
+                    else 
+                        return Encoding.UTF8.GetBytes("Battery");
+
+                }
+                else 
+                    return Encoding.UTF8.GetBytes(opProps.inverter.Mode.ToString(CultureInfo.InvariantCulture));
+
+            } 
             
             return Encoding.UTF8.GetBytes(SensorValue(opProps, sensorName).ToString(CultureInfo.InvariantCulture));
         }
