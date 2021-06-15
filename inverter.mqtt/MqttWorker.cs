@@ -30,21 +30,21 @@ namespace inverter.mqtt
 
         private const int periodUpdateCount = 2;
         public SensorConfig[] sensorValues = new SensorConfig[] {
-            new SensorConfig { Name =  "PV_in_voltage", FriendlyName="Energy - Solar Panel Voltage", UnitOfMeasure = "V", IconName = "solar-panel-large" , HasRunningAverage = false, UpdatePeriod = 20 },
-            new SensorConfig { Name =  "PV_in_current", FriendlyName="Energy - Solar Panel Current", UnitOfMeasure = "A", IconName = "solar-panel-large" , HasRunningAverage = false, UpdatePeriod = 20 },
-            new SensorConfig { Name =  "PV_in_watts", FriendlyName = "Energy - Solar Panel Power", DeviceClass = "power", UnitOfMeasure = "W", IconName = "solar-panel-large" , HasRunningAverage = true, UpdatePeriod = 5 },
+            new SensorConfig { Name =  "PV_in_voltage", FriendlyName="Energy - Solar Panel Voltage", UnitOfMeasure = "V", IconName = "solar-panel-large" , HasRunningAverage = false, UpdatePeriod = 30 },
+            new SensorConfig { Name =  "PV_in_current", FriendlyName="Energy - Solar Panel Current", UnitOfMeasure = "A", IconName = "solar-panel-large" , HasRunningAverage = false, UpdatePeriod = 30 },
+            new SensorConfig { Name =  "PV_in_watts", FriendlyName = "Energy - Solar Panel Power", DeviceClass = "power", UnitOfMeasure = "W", IconName = "solar-panel-large" , HasRunningAverage = true, UpdatePeriod = 15 },
             new SensorConfig { Name =  "SCC_voltage", FriendlyName = "Energy - MPTT Charger Voltage", UnitOfMeasure = "V", IconName = "current-dc" , HasRunningAverage = false, UpdatePeriod = 60 },
             new SensorConfig { Name =  "load_watt",  FriendlyName = "Energy - Inverter Load", UnitOfMeasure = "W", DeviceClass = "power", IconName ="chart-bell-curve" , HasRunningAverage = true, UpdatePeriod = 5 },
-            new SensorConfig { Name =  "bus_voltage", FriendlyName = "Energy - Inverter Bus Voltage", UnitOfMeasure = "V",IconName ="details" , HasRunningAverage = false, UpdatePeriod = 60 },
-            new SensorConfig { Name =  "heatsink_temperature", FriendlyName = "Energy - Inverter Temperature",DeviceClass = "temperature", UnitOfMeasure = "C",IconName ="details" , HasRunningAverage = false, UpdatePeriod = 60 },
-            new SensorConfig { Name =  "battery_capacity", FriendlyName = "Energy - Battery Level",DeviceClass = "battery", UnitOfMeasure = "%",IconName ="battery-outline" , HasRunningAverage = false, UpdatePeriod =  30 },
-            new SensorConfig { Name =  "battery_charge_current", FriendlyName="Energy - Battery Charge Current", UnitOfMeasure = "A",IconName ="current-dc" , HasRunningAverage = false, UpdatePeriod = 10 },
-            new SensorConfig { Name =  "battery_discharge_current", FriendlyName = "Energy - Battery Discharge Current",  UnitOfMeasure = "A", IconName ="current-dc" , HasRunningAverage = false, UpdatePeriod = 10 },
+            new SensorConfig { Name =  "bus_voltage", FriendlyName = "Energy - Inverter Bus Voltage", UnitOfMeasure = "V", IconName ="details" , HasRunningAverage = false, UpdatePeriod = 120 },
+            new SensorConfig { Name =  "heatsink_temperature", FriendlyName = "Energy - Inverter Temperature",DeviceClass = "temperature", UnitOfMeasure = "C",IconName ="details" , HasRunningAverage = false, UpdatePeriod = 120 },
+            new SensorConfig { Name =  "battery_capacity", FriendlyName = "Energy - Battery Level",DeviceClass = "battery", UnitOfMeasure = "%",IconName ="battery-outline" , HasRunningAverage = false, UpdatePeriod =  120 },
+            new SensorConfig { Name =  "battery_charge_current", FriendlyName="Energy - Battery Charge Current", UnitOfMeasure = "A",IconName ="current-dc" , HasRunningAverage = false, UpdatePeriod = 5 },
+            new SensorConfig { Name =  "battery_discharge_current", FriendlyName = "Energy - Battery Discharge Current",  UnitOfMeasure = "A", IconName ="current-dc" , HasRunningAverage = false, UpdatePeriod = 5 },
             new SensorConfig { Name =  "battery_voltage", FriendlyName = "Energy - Battery Voltage",  UnitOfMeasure = "V", IconName ="current-dc" , HasRunningAverage = false, UpdatePeriod = 120 },
-            new SensorConfig { Name =  "inverter_mode", FriendlyName = "Energy - Inverter Mode",  UnitOfMeasure = "", IconName ="current-dc" , HasRunningAverage = false, UpdatePeriod = 30 },
-            new SensorConfig { Name =  "time_to_charge", FriendlyName = "Energy - Battery Time To Charge ",  UnitOfMeasure = "Minutes", IconName ="timer-sand" , HasRunningAverage = false, UpdatePeriod = 60 },
-            new SensorConfig { Name =  "time_to_discharge", FriendlyName = "Energy - Battery Time To Discharge ",  UnitOfMeasure = "Minutes", IconName ="timer-sand" , HasRunningAverage = false, UpdatePeriod = 60 }
-
+            new SensorConfig { Name =  "inverter_mode", FriendlyName = "Energy - Inverter Mode",  UnitOfMeasure = "", IconName ="current-dc" , HasRunningAverage = false, UpdatePeriod = 5 },
+            new SensorConfig { Name =  "time_to_charge", FriendlyName = "Energy - Battery Time To Charge ",  UnitOfMeasure = "Minutes", IconName ="timer-sand" , HasRunningAverage = false, UpdatePeriod = 5 },
+            new SensorConfig { Name =  "time_to_discharge", FriendlyName = "Energy - Battery Time To Discharge ",  UnitOfMeasure = "Minutes", IconName ="timer-sand" , HasRunningAverage = false, UpdatePeriod = 5 },
+            new SensorConfig { Name =  "grid_voltage", FriendlyName = "Energy - Grid Voltage ",  UnitOfMeasure = "V", IconName ="details" , HasRunningAverage = false, UpdatePeriod = 30 }
         };
 
         private AverageValueOverTime[] periodUpdates = new AverageValueOverTime[periodUpdateCount];
@@ -203,7 +203,7 @@ namespace inverter.mqtt
             if (sensorName == sensorValues[9].Name) return opProps.battery.BatteryDischargeCurrent;
             if (sensorName == sensorValues[10].Name) return opProps.battery.BatteryVoltage;
             if (sensorName == sensorValues[12].Name) { 
-                // time to charge. ( 100 - Battery % * Ah) / 
+                // time to charge. ( 100 - Battery % * Ah) / current
                 if (opProps.battery.BatteryChargingCurrent > 0) {
 
                     decimal remCap = 1 - ((decimal)opProps.battery.BatteryCapacity / 100);
@@ -216,7 +216,7 @@ namespace inverter.mqtt
                 } else return 0;
             }
             if (sensorName == sensorValues[13].Name) {
-                // time to discharge. ( ( Battery % - (DoD * 100) * Ah) / 
+                // time to discharge. ( ( Battery % - (DoD * 100) * Ah) / current
                 if (opProps.battery.BatteryDischargeCurrent > 0) {
                     decimal capRem = opProps.battery.BatteryCapacity - (100 * inverterConfig.DoD);
                     decimal cap = (capRem / 100);
@@ -229,7 +229,7 @@ namespace inverter.mqtt
                 } else return 0;
 
             }
-            
+            if (sensorName == sensorValues[14].Name) return opProps.inverter.GridVoltage;
 
             return 0;
         }
