@@ -32,9 +32,9 @@ namespace inverter.mqtt
         public SensorConfig[] sensorValues = new SensorConfig[] {
             new SensorConfig { Name =  "PV_in_voltage", FriendlyName="Energy - Solar Panel Voltage", UnitOfMeasure = "V", IconName = "solar-panel-large" , HasRunningAverage = false, UpdatePeriod = 30 },
             new SensorConfig { Name =  "PV_in_current", FriendlyName="Energy - Solar Panel Current", UnitOfMeasure = "A", IconName = "solar-panel-large" , HasRunningAverage = false, UpdatePeriod = 30 },
-            new SensorConfig { Name =  "PV_in_watts", FriendlyName = "Energy - Solar Panel Power", DeviceClass = "power", UnitOfMeasure = "W", IconName = "solar-panel-large" , HasRunningAverage = true, UpdatePeriod = 15 },
+            new SensorConfig { Name =  "PV_in_watts", FriendlyName = "Energy - Solar Panel Power", DeviceClass = "power", UnitOfMeasure = "W", IconName = "solar-panel-large" , HasRunningAverage = false, UpdatePeriod = 15 },
             new SensorConfig { Name =  "SCC_voltage", FriendlyName = "Energy - MPTT Charger Voltage", UnitOfMeasure = "V", IconName = "current-dc" , HasRunningAverage = false, UpdatePeriod = 60 },
-            new SensorConfig { Name =  "load_watt",  FriendlyName = "Energy - Inverter Load", UnitOfMeasure = "W", DeviceClass = "power", IconName ="chart-bell-curve" , HasRunningAverage = true, UpdatePeriod = 5 },
+            new SensorConfig { Name =  "load_watt",  FriendlyName = "Energy - Inverter Load", UnitOfMeasure = "W", DeviceClass = "power", IconName ="chart-bell-curve" , HasRunningAverage = false, UpdatePeriod = 5 },
             new SensorConfig { Name =  "bus_voltage", FriendlyName = "Energy - Inverter Bus Voltage", UnitOfMeasure = "V", IconName ="details" , HasRunningAverage = false, UpdatePeriod = 120 },
             new SensorConfig { Name =  "heatsink_temperature", FriendlyName = "Energy - Inverter Temperature",DeviceClass = "temperature", UnitOfMeasure = "C",IconName ="details" , HasRunningAverage = false, UpdatePeriod = 120 },
             new SensorConfig { Name =  "battery_capacity", FriendlyName = "Energy - Battery Level",DeviceClass = "battery", UnitOfMeasure = "%",IconName ="battery-outline" , HasRunningAverage = false, UpdatePeriod =  120 },
