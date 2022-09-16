@@ -73,6 +73,8 @@ namespace inverter.mqtt
 
         private void onReceived(object sender, BasicDeliverEventArgs ea)
         {
+            _logger.LogInformation("RABBIT RECEIVED");
+
             var config = _appConfig.Value.MQTT;
             IBasicProperties props = ea.BasicProperties;
             string msgType = "";

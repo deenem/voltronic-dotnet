@@ -56,7 +56,7 @@ namespace inverter.mqtt
       {
         get
         {
-          return $"{Config.devicename}_{Name}";
+          return $"{Config.devicename}/{Name}";
         }
       }
 
@@ -71,21 +71,21 @@ namespace inverter.mqtt
 
 
     public SensorConfig[] sensorValues = new SensorConfig[] {
-            new SensorConfig { Name =  "pv_in_voltage", FriendlyName="Solar Panel Voltage",  UnitOfMeasure = "V", DeviceClass = "voltage",   StateClass="measurement", UpdatePeriod = 30 },
-            new SensorConfig { Name =  "pv_in_current", FriendlyName="Solar Panel Current", UnitOfMeasure = "A", DeviceClass= "current",  StateClass="measurement", UpdatePeriod = 30 },
-            new SensorConfig { Name =  "pv_in_watts", FriendlyName = "Solar Panel Power", UnitOfMeasure = "W", DeviceClass = "power", StateClass="measurement",  UpdatePeriod = 15 },
-            new SensorConfig { Name =  "scc_voltage", FriendlyName = "MPTT Charger Voltage", UnitOfMeasure = "V", DeviceClass = "voltage",  StateClass="measurement", UpdatePeriod = 60 },     
-            new SensorConfig { Name =  "load_watt",  FriendlyName = "Inverter Load", UnitOfMeasure = "W", DeviceClass = "power", StateClass="measurement",  UpdatePeriod = 5 },
-            new SensorConfig { Name =  "bus_voltage", FriendlyName = "Inverter Bus Voltage", UnitOfMeasure = "V", DeviceClass = "voltage",  StateClass="measurement", UpdatePeriod = 120 },
-            new SensorConfig { Name =  "heatsink_temperature", FriendlyName = "Inverter Temperature", DeviceClass = "temperature", StateClass="measurement",  UnitOfMeasure = "C", UpdatePeriod = 120 },
-            new SensorConfig { Name =  "battery_capacity", FriendlyName = "Battery Level", UnitOfMeasure = "%", DeviceClass = "battery", StateClass="measurement", UpdatePeriod =  120 },
-            new SensorConfig { Name =  "battery_charge_current", FriendlyName="Battery Charge Current", UnitOfMeasure = "A", DeviceClass= "current", StateClass="measurement",  UpdatePeriod = 5 },
-            new SensorConfig { Name =  "battery_discharge_current", FriendlyName = "Battery Discharge Current",  UnitOfMeasure = "A", DeviceClass= "current", StateClass="measurement" , UpdatePeriod = 5 },
-            new SensorConfig { Name =  "battery_voltage", FriendlyName = "Battery Voltage",  UnitOfMeasure = "V", DeviceClass= "voltage", StateClass="measurement",  UpdatePeriod = 120 },
+            new SensorConfig { Name =  "pv_in_voltage", FriendlyName="Solar Panel Voltage",  UnitOfMeasure = "V", DeviceClass = "voltage",   StateClass="measurement", UpdatePeriod = 6 },
+            new SensorConfig { Name =  "pv_in_current", FriendlyName="Solar Panel Current", UnitOfMeasure = "A", DeviceClass= "current",  StateClass="measurement", UpdatePeriod = 6 },
+            new SensorConfig { Name =  "pv_in_watts", FriendlyName = "Solar Panel Power", UnitOfMeasure = "W", DeviceClass = "power", StateClass="measurement",  UpdatePeriod = 3 },
+            new SensorConfig { Name =  "scc_voltage", FriendlyName = "MPTT Charger Voltage", UnitOfMeasure = "V", DeviceClass = "voltage",  StateClass="measurement", UpdatePeriod = 12 },     
+            new SensorConfig { Name =  "load_watt",  FriendlyName = "Inverter Load", UnitOfMeasure = "W", DeviceClass = "power", StateClass="measurement",  UpdatePeriod = 1 },
+            new SensorConfig { Name =  "bus_voltage", FriendlyName = "Inverter Bus Voltage", UnitOfMeasure = "V", DeviceClass = "voltage",  StateClass="measurement", UpdatePeriod = 12 },
+            new SensorConfig { Name =  "heatsink_temperature", FriendlyName = "Inverter Temperature", DeviceClass = "temperature", StateClass="measurement",  UnitOfMeasure = "C", UpdatePeriod = 12 },
+            new SensorConfig { Name =  "battery_capacity", FriendlyName = "Battery Level", UnitOfMeasure = "%", DeviceClass = "battery", StateClass="measurement", UpdatePeriod =  12 },
+            new SensorConfig { Name =  "battery_charge_current", FriendlyName="Battery Charge Current", UnitOfMeasure = "A", DeviceClass= "current", StateClass="measurement",  UpdatePeriod = 1 },
+            new SensorConfig { Name =  "battery_discharge_current", FriendlyName = "Battery Discharge Current",  UnitOfMeasure = "A", DeviceClass= "current", StateClass="measurement" , UpdatePeriod = 1 },
+            new SensorConfig { Name =  "battery_voltage", FriendlyName = "Battery Voltage",  UnitOfMeasure = "V", DeviceClass= "voltage", StateClass="measurement",  UpdatePeriod = 12 },
             new SensorConfig { Name =  "inverter_mode", FriendlyName = "Inverter Mode",  UnitOfMeasure = "",  UpdatePeriod = 5 },
-            new SensorConfig { Name =  "time_to_charge", FriendlyName = "Battery Time To Charge ",  UnitOfMeasure = "Minutes", IconName ="mdi:timer-sand" ,  UpdatePeriod = 5 },
-            new SensorConfig { Name =  "time_to_discharge", FriendlyName = "Battery Time To Discharge ",  UnitOfMeasure = "Minutes", IconName ="mdi:timer-sand" ,  UpdatePeriod = 5 },
-            new SensorConfig { Name =  "grid_voltage", FriendlyName = "Grid Voltage ",  UnitOfMeasure = "V", DeviceClass= "voltage", StateClass="measurement", UpdatePeriod = 30 }
+            new SensorConfig { Name =  "time_to_charge", FriendlyName = "Battery Time To Charge ",  UnitOfMeasure = "Minutes", IconName ="mdi:timer-sand" ,  UpdatePeriod = 1 },
+            new SensorConfig { Name =  "time_to_discharge", FriendlyName = "Battery Time To Discharge ",  UnitOfMeasure = "Minutes", IconName ="mdi:timer-sand" ,  UpdatePeriod = 1 },
+            new SensorConfig { Name =  "grid_voltage", FriendlyName = "Grid Voltage ",  UnitOfMeasure = "V", DeviceClass= "voltage", StateClass="measurement", UpdatePeriod = 6 }
         };
 
 
