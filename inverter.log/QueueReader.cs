@@ -53,7 +53,7 @@ namespace Inverter.Log
           Console.WriteLine(" Header {0}:{1}", key, msgType);
         }
       }
-      var body = ea.Body;
+      var body = ea.Body.Span;
       var message = Encoding.UTF8.GetString(body);
       Console.WriteLine(" [x] Received {0}", message);
 

@@ -86,7 +86,7 @@ namespace inverter.mqtt
                     msgType = Encoding.Default.GetString(b);
                 }
             }
-            var body = ea.Body;
+            var body = ea.Body.Span;
             var message = Encoding.UTF8.GetString(body);
 
             if (msgType == "OpProp")
