@@ -6,9 +6,10 @@ namespace inverter.common.model.messages
 {
   public class InverterUserSettings
   {
-    public InputVoltageRange InputVoltageRange { get; private set; }
-    public OutputSourcePriority OutputSourcePriority { get; private set; }
-    public int ChargerSourcePriority { get; private set; }
+
+    public InputVoltageRange InputVoltageRange { get; set; }
+    public OutputSourcePriority OutputSourcePriority { get; set; }
+    public ChargerSourcePriority ChargerSourcePriority { get; set; }
 
     public void Update(DeviceRating deviceRating)
     {
@@ -30,10 +31,10 @@ namespace inverter.common.model.messages
   public class BatteryUserSettings
   {
 
-    public decimal BatteryRechargeVoltage { get; private set; }
-    public decimal BatteryUnderVoltage { get; private set; }
-    public decimal BatteryBulkVoltage { get; private set; }
-    public decimal BatteryFloatVoltage { get; private set; }
+    public decimal BatteryRechargeVoltage { get; set; }
+    public decimal BatteryUnderVoltage { get; set; }
+    public decimal BatteryBulkVoltage { get; set; }
+    public decimal BatteryFloatVoltage { get; set; }
 
     public void Update(DeviceRating deviceRating)
     {
@@ -114,10 +115,10 @@ namespace inverter.common.model.messages
 
 
     public DateTime EffectiveDate { get; set; }
-    public InverterUserSettings inverter { get; private set; }
-    public BatteryUserSettings battery { get; private set; }
-    public SolarUserSettings solar { get; private set; }
-    public EnviromentUserSettings enviroment { get; private set; }
+    public InverterUserSettings inverter { get; set; }
+    public BatteryUserSettings battery { get; set; }
+    public SolarUserSettings solar { get; set; }
+    public EnviromentUserSettings enviroment { get; set; }
 
     public UserSettings()
     {

@@ -73,7 +73,7 @@ namespace inverter.mqtt
 
         private void onReceived(object sender, BasicDeliverEventArgs ea)
         {
-            _logger.LogInformation("RABBIT RECEIVED");
+            
 
             var config = _appConfig.Value.MQTT;
             IBasicProperties props = ea.BasicProperties;
@@ -89,19 +89,25 @@ namespace inverter.mqtt
             var body = ea.Body.Span;
             var message = Encoding.UTF8.GetString(body);
 
-            if (msgType == "OpProp")
+            _logger.LogInformation("RABBIT RECEIVED - " + msgType);
+
+            if (mqttWorker.MqttClient.IsConnected)
             {
-                if (mqttWorker.MqttClient.IsConnected)
-                {
-                    //_logger.LogInformation(message);
+                //_logger.LogInformation(message);
+                if (msgType.Equals(OperatingProps.MESSAGE_TYPE)) {
                     OperatingProps opProps = JsonConvert.DeserializeObject<OperatingProps>(message);
-                    mqttWorker.Update(opProps, counter);
-                    counter += 1;
-                    counter %= 100000;
+                    mqttWorker.UpdateOpProps(opProps, counter);
                 }
-                else
-                    _logger.LogWarning("No Connection to Mqtt");
+                if (msgType.Equals(UserSettings.MESSAGE_TYPE)) {
+                    UserSettings userSettings = JsonConvert.DeserializeObject<UserSettings>(message);
+                    mqttWorker.UpdateUserSettings(userSettings, counter);
+                }
+
+                counter += 1;
+                counter %= 100000;
             }
+            else
+                _logger.LogWarning("No Connection to Mqtt");
         }
     }
 }

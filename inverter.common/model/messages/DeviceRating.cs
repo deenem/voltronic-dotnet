@@ -32,6 +32,13 @@ namespace inverter.common.model.messages
     Hybrid = 10
   }
 
+  public enum ChargerSourcePriority
+  {
+    UtilityFirst = 0,
+    SolarFirst = 1,
+    SolarUtility = 2,
+    OnlySolar = 3
+  }
 
   public class DeviceRating
   {
@@ -58,7 +65,7 @@ namespace inverter.common.model.messages
     public int CurrentMaxChargeCurrent { get; private set; }
     public InputVoltageRange InputVoltageRange { get; private set; }
     public OutputSourcePriority OutputSourcePriority { get; private set; }
-    public int ChargerSourcePriority { get; private set; }
+    public ChargerSourcePriority ChargerSourcePriority { get; private set; }
     public int ParallelMaxNum { get; private set; }
     public MachineType MachineType { get; private set; }
     public int Topology { get; private set; }
@@ -169,7 +176,7 @@ namespace inverter.common.model.messages
             OutputSourcePriority = (OutputSourcePriority)int.Parse(values[i]);
             break;
           case 17:
-            ChargerSourcePriority = int.Parse(values[i]);
+            ChargerSourcePriority = (ChargerSourcePriority)int.Parse(values[i]);
             break;
           case 18:
             ParallelMaxNum = int.Parse(values[i]);

@@ -71,23 +71,27 @@ namespace inverter.mqtt
 
 
         public SensorConfig[] sensorValues = new SensorConfig[] {
-            new SensorConfig { Name =  "pv_in_voltage", FriendlyName="Solar Panel Voltage",  UnitOfMeasure = "V", DeviceClass = "voltage",   StateClass="measurement", UpdatePeriod = 6 },
-            new SensorConfig { Name =  "pv_in_current", FriendlyName="Solar Panel Current", UnitOfMeasure = "A", DeviceClass= "current",  StateClass="measurement", UpdatePeriod = 6 },
-            new SensorConfig { Name =  "pv_in_watts", FriendlyName = "Solar Panel Power", UnitOfMeasure = "W", DeviceClass = "power", StateClass="measurement",  UpdatePeriod = 3 },
-            new SensorConfig { Name =  "scc_voltage", FriendlyName = "MPTT Charger Voltage", UnitOfMeasure = "V", DeviceClass = "voltage",  StateClass="measurement", UpdatePeriod = 12 },
-            new SensorConfig { Name =  "load_watt",  FriendlyName = "Inverter Load", UnitOfMeasure = "W", DeviceClass = "power", StateClass="measurement",  UpdatePeriod = 1 },
-            new SensorConfig { Name =  "bus_voltage", FriendlyName = "Inverter Bus Voltage", UnitOfMeasure = "V", DeviceClass = "voltage",  StateClass="measurement", UpdatePeriod = 12 },
-            new SensorConfig { Name =  "heatsink_temperature", FriendlyName = "Inverter Temperature", DeviceClass = "temperature", StateClass="measurement",  UnitOfMeasure = "C", UpdatePeriod = 12 },
-            new SensorConfig { Name =  "battery_capacity", FriendlyName = "Battery Level", UnitOfMeasure = "%", DeviceClass = "battery", StateClass="measurement", UpdatePeriod =  12 },
-            new SensorConfig { Name =  "battery_charge_current", FriendlyName="Battery Charge Current", UnitOfMeasure = "A", DeviceClass= "current", StateClass="measurement",  UpdatePeriod = 1 },
-            new SensorConfig { Name =  "battery_discharge_current", FriendlyName = "Battery Discharge Current",  UnitOfMeasure = "A", DeviceClass= "current", StateClass="measurement" , UpdatePeriod = 1 },
-            new SensorConfig { Name =  "battery_voltage", FriendlyName = "Battery Voltage",  UnitOfMeasure = "V", DeviceClass= "voltage", StateClass="measurement",  UpdatePeriod = 12 },
-            new SensorConfig { Name =  "inverter_mode", FriendlyName = "Inverter Mode",  UnitOfMeasure = "",  UpdatePeriod = 5 },
-            new SensorConfig { Name =  "time_to_charge", FriendlyName = "Battery Time To Charge ",  UnitOfMeasure = "Minutes", IconName ="mdi:timer-sand" ,  UpdatePeriod = 1 },
-            new SensorConfig { Name =  "time_to_discharge", FriendlyName = "Battery Time To Discharge ",  UnitOfMeasure = "Minutes", IconName ="mdi:timer-sand" ,  UpdatePeriod = 1 },
-            new SensorConfig { Name =  "grid_voltage", FriendlyName = "Grid Voltage ",  UnitOfMeasure = "V", DeviceClass= "voltage", StateClass="measurement", UpdatePeriod = 6 }
+            new SensorConfig { Name =  "pv_in_voltage", FriendlyName="Solar Panel Voltage",  UnitOfMeasure = "V", DeviceClass = "voltage",   StateClass="measurement", UpdatePeriod = 6 }, // 0
+            new SensorConfig { Name =  "pv_in_current", FriendlyName="Solar Panel Current", UnitOfMeasure = "A", DeviceClass= "current",  StateClass="measurement", UpdatePeriod = 6 }, // 1
+            new SensorConfig { Name =  "pv_in_watts", FriendlyName = "Solar Panel Power", UnitOfMeasure = "W", DeviceClass = "power", StateClass="measurement",  UpdatePeriod = 3 }, // 2
+            new SensorConfig { Name =  "scc_voltage", FriendlyName = "MPTT Charger Voltage", UnitOfMeasure = "V", DeviceClass = "voltage",  StateClass="measurement", UpdatePeriod = 12 }, // 3
+            new SensorConfig { Name =  "load_watt",  FriendlyName = "Inverter Load", UnitOfMeasure = "W", DeviceClass = "power", StateClass="measurement",  UpdatePeriod = 1 }, // 4
+            new SensorConfig { Name =  "bus_voltage", FriendlyName = "Inverter Bus Voltage", UnitOfMeasure = "V", DeviceClass = "voltage",  StateClass="measurement", UpdatePeriod = 12 }, // 5
+            new SensorConfig { Name =  "heatsink_temperature", FriendlyName = "Inverter Temperature", DeviceClass = "temperature", StateClass="measurement",  UnitOfMeasure = "C", UpdatePeriod = 12 }, // 6
+            new SensorConfig { Name =  "battery_capacity", FriendlyName = "Battery Level", UnitOfMeasure = "%", DeviceClass = "battery", StateClass="measurement", UpdatePeriod =  12 }, // 7
+            new SensorConfig { Name =  "battery_charge_current", FriendlyName="Battery Charge Current", UnitOfMeasure = "A", DeviceClass= "current", StateClass="measurement",  UpdatePeriod = 1 }, //8
+            new SensorConfig { Name =  "battery_discharge_current", FriendlyName = "Battery Discharge Current",  UnitOfMeasure = "A", DeviceClass= "current", StateClass="measurement" , UpdatePeriod = 1 }, // 9
+            new SensorConfig { Name =  "battery_voltage", FriendlyName = "Battery Voltage",  UnitOfMeasure = "V", DeviceClass= "voltage", StateClass="measurement",  UpdatePeriod = 12 }, // 10
+            new SensorConfig { Name =  "inverter_mode", FriendlyName = "Inverter Mode",  UnitOfMeasure = "",  UpdatePeriod = 5 }, // 11
+            new SensorConfig { Name =  "time_to_charge", FriendlyName = "Battery Time To Charge ",  UnitOfMeasure = "Minutes", IconName ="mdi:timer-sand" ,  UpdatePeriod = 1 }, // 12
+            new SensorConfig { Name =  "time_to_discharge", FriendlyName = "Battery Time To Discharge ",  UnitOfMeasure = "Minutes", IconName ="mdi:timer-sand" ,  UpdatePeriod = 1 }, // 13
+            new SensorConfig { Name =  "grid_voltage", FriendlyName = "Grid Voltage ",  UnitOfMeasure = "V", DeviceClass= "voltage", StateClass="measurement", UpdatePeriod = 3 } // 14
         };
 
+        public SensorConfig[] userValues = new SensorConfig[] {
+            new SensorConfig { Name =  "output_priority", FriendlyName = "Output Priority",  UnitOfMeasure = "",  UpdatePeriod = 5 }, // 0
+            new SensorConfig { Name =  "charge_priority", FriendlyName = "Charge Priority",  UnitOfMeasure = "",  UpdatePeriod = 5 } // 1
+        };
 
 
         private readonly ILogger<Worker> _logger;
@@ -166,16 +170,24 @@ namespace inverter.mqtt
                 sensor.device = sensorDevice;
                 MqttClient.Publish(sensorConfigTopic, Encoding.UTF8.GetBytes(JsonSerializer.Serialize(sensor, options)));
             }
+
+            foreach (SensorConfig sensor in userValues)
+            {
+                _logger.Log(LogLevel.Information, "Item...{0}:{1}:{2}", sensor.Name, sensor.UnitOfMeasure, sensor.IconName);
+                sensor.Config = config;
+                sensorConfigTopic = $"{config.topic}/sensor/{sensor.UniqueId}/config";
+                sensor.device = sensorDevice;
+                MqttClient.Publish(sensorConfigTopic, Encoding.UTF8.GetBytes(JsonSerializer.Serialize(sensor, options)));
+            }            
         }
 
-        public void Update(OperatingProps opProps, int counter)
+        public void UpdateOpProps(OperatingProps opProps, int counter)
         {
             if (MqttClient.IsConnected)
             {
                 foreach (SensorConfig sensor in sensorValues)
                 {
                     sensor.Config = config;
-                    decimal sensorValue = SensorValue(opProps, sensor.Name);
                     if (counter % sensor.UpdatePeriod == 0)
                     {
                         // publish a message on "/home/temperature" topic with QoS 2 
@@ -188,6 +200,27 @@ namespace inverter.mqtt
                 _logger.Log(LogLevel.Information, "Updated paused until connected...{0}", config.server);
 
         }
+
+        public void UpdateUserSettings(UserSettings userSettings, int counter)
+        {
+            if (MqttClient.IsConnected)
+            {
+                foreach (SensorConfig userVal in userValues)
+                {
+                    userVal.Config = config;
+                    if (counter % userVal.UpdatePeriod == 0)
+                    {
+                        // publish a message on "/home/temperature" topic with QoS 2 
+                        byte[] value = UserValueByte(userSettings, userVal.Name);
+                        MqttClient.Publish(userVal.StateTopic, value);
+                    }
+                }
+            }
+            else
+                _logger.Log(LogLevel.Information, "Updated paused until connected...{0}", config.server);
+
+        }
+
 
         private decimal SensorValue(OperatingProps opProps, string sensorName)
         {
@@ -266,5 +299,31 @@ namespace inverter.mqtt
 
             return Encoding.UTF8.GetBytes(SensorValue(opProps, sensorName).ToString(CultureInfo.InvariantCulture));
         }
+
+        private byte[] UserValueByte(UserSettings userSettings, string sensorName)
+        {
+            if (sensorName == userValues[0].Name) // output priority
+            {
+                if (userSettings.inverter.OutputSourcePriority == OutputSourcePriority.UtilityFirst)    
+                    return Encoding.UTF8.GetBytes("Grid First");
+                else if (userSettings.inverter.OutputSourcePriority == OutputSourcePriority.SolarFirst)    
+                    return Encoding.UTF8.GetBytes("Solar First");
+                else if (userSettings.inverter.OutputSourcePriority == OutputSourcePriority.SBUFirst)    
+                    return Encoding.UTF8.GetBytes("SBU");
+            }
+            else if (sensorName == userValues[1].Name) // charge priority
+            {
+                if (userSettings.inverter.ChargerSourcePriority == ChargerSourcePriority.UtilityFirst)    
+                    return Encoding.UTF8.GetBytes("Grid First");
+                else if (userSettings.inverter.ChargerSourcePriority == ChargerSourcePriority.SolarFirst)    
+                    return Encoding.UTF8.GetBytes("Solar First");
+                else if (userSettings.inverter.ChargerSourcePriority == ChargerSourcePriority.SolarUtility)    
+                    return Encoding.UTF8.GetBytes("Solar - Grid");
+                else if (userSettings.inverter.ChargerSourcePriority == ChargerSourcePriority.OnlySolar)    
+                    return Encoding.UTF8.GetBytes("Only Solar");                    
+            }
+            return null;
+        }
+
     }
 }
