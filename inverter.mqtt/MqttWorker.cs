@@ -82,15 +82,15 @@ namespace inverter.mqtt
             new SensorConfig { Name =  "battery_charge_current", FriendlyName="Battery Charge Current", UnitOfMeasure = "A", DeviceClass= "current", StateClass="measurement",  UpdatePeriod = 1 }, //8
             new SensorConfig { Name =  "battery_discharge_current", FriendlyName = "Battery Discharge Current",  UnitOfMeasure = "A", DeviceClass= "current", StateClass="measurement" , UpdatePeriod = 1 }, // 9
             new SensorConfig { Name =  "battery_voltage", FriendlyName = "Battery Voltage",  UnitOfMeasure = "V", DeviceClass= "voltage", StateClass="measurement",  UpdatePeriod = 12 }, // 10
-            new SensorConfig { Name =  "inverter_mode", FriendlyName = "Inverter Mode",  UnitOfMeasure = "",  UpdatePeriod = 5 }, // 11
+            new SensorConfig { Name =  "inverter_mode", FriendlyName = "Inverter Mode", DeviceClass="enum",  UnitOfMeasure = "",  UpdatePeriod = 5 }, // 11
             new SensorConfig { Name =  "time_to_charge", FriendlyName = "Battery Time To Charge ",  UnitOfMeasure = "Minutes", IconName ="mdi:timer-sand" ,  UpdatePeriod = 1 }, // 12
             new SensorConfig { Name =  "time_to_discharge", FriendlyName = "Battery Time To Discharge ",  UnitOfMeasure = "Minutes", IconName ="mdi:timer-sand" ,  UpdatePeriod = 1 }, // 13
             new SensorConfig { Name =  "grid_voltage", FriendlyName = "Grid Voltage ",  UnitOfMeasure = "V", DeviceClass= "voltage", StateClass="measurement", UpdatePeriod = 3 } // 14
         };
 
         public SensorConfig[] userValues = new SensorConfig[] {
-            new SensorConfig { Name =  "output_priority", FriendlyName = "Output Priority",  UnitOfMeasure = "",  UpdatePeriod = 5 }, // 0
-            new SensorConfig { Name =  "charge_priority", FriendlyName = "Charge Priority",  UnitOfMeasure = "",  UpdatePeriod = 5 } // 1
+            new SensorConfig { Name =  "output_priority", FriendlyName = "Output Priority", DeviceClass="enum",  UnitOfMeasure = "",  UpdatePeriod = 5 }, // 0
+            new SensorConfig { Name =  "charge_priority", FriendlyName = "Charge Priority", DeviceClass="enum", UnitOfMeasure = "",  UpdatePeriod = 5 } // 1
         };
 
 
@@ -168,6 +168,9 @@ namespace inverter.mqtt
                 sensor.Config = config;
                 sensorConfigTopic = $"{config.topic}/sensor/{sensor.UniqueId}/config";
                 sensor.device = sensorDevice;
+
+                _logger.Log(LogLevel.Information, "Sending...{0}:{1}", sensorConfigTopic, JsonSerializer.Serialize(sensor, options));
+
                 MqttClient.Publish(sensorConfigTopic, Encoding.UTF8.GetBytes(JsonSerializer.Serialize(sensor, options)));
             }
 
@@ -177,6 +180,8 @@ namespace inverter.mqtt
                 sensor.Config = config;
                 sensorConfigTopic = $"{config.topic}/sensor/{sensor.UniqueId}/config";
                 sensor.device = sensorDevice;
+                _logger.Log(LogLevel.Information, "Sending...{0}:{1}", sensorConfigTopic, JsonSerializer.Serialize(sensor, options));
+
                 MqttClient.Publish(sensorConfigTopic, Encoding.UTF8.GetBytes(JsonSerializer.Serialize(sensor, options)));
             }            
         }
@@ -305,9 +310,9 @@ namespace inverter.mqtt
             if (sensorName == userValues[0].Name) // output priority
             {
                 if (userSettings.inverter.OutputSourcePriority == OutputSourcePriority.UtilityFirst)    
-                    return Encoding.UTF8.GetBytes("Grid First");
+                    return Encoding.UTF8.GetBytes("USB");
                 else if (userSettings.inverter.OutputSourcePriority == OutputSourcePriority.SolarFirst)    
-                    return Encoding.UTF8.GetBytes("Solar First");
+                    return Encoding.UTF8.GetBytes("SUB");
                 else if (userSettings.inverter.OutputSourcePriority == OutputSourcePriority.SBUFirst)    
                     return Encoding.UTF8.GetBytes("SBU");
             }

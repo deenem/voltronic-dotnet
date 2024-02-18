@@ -41,10 +41,12 @@ namespace inverter.mqtt
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                //_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
 
-                await Task.Delay(1000, stoppingToken);
+                //_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                await Task.Delay(1000);
             }
+            _logger.LogInformation("Shutdown requested at: {time}", DateTimeOffset.Now);
+
             rabbitModel.Close();
             rabbitConnection.Close();
             mqttWorker.Disconnect();
@@ -53,6 +55,8 @@ namespace inverter.mqtt
         private void ConnectRabbitMQ()
         {
             var rabbitConfig = _appConfig.Value.RabbitMQ;
+
+            _logger.LogInformation("Rabbit connect: {0}",  _appConfig.Value.RabbitMQ);
 
             var factory = new ConnectionFactory() { UserName = rabbitConfig.username, Password = rabbitConfig.password, HostName = rabbitConfig.server };
             rabbitConnection = factory.CreateConnection();
@@ -73,7 +77,6 @@ namespace inverter.mqtt
 
         private void onReceived(object sender, BasicDeliverEventArgs ea)
         {
-            
 
             var config = _appConfig.Value.MQTT;
             IBasicProperties props = ea.BasicProperties;
