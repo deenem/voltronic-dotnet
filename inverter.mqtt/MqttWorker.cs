@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using System.Text;
 using inverter.common.model.messages;
 using System.Globalization;
-using static AverageValueOverTime;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -50,6 +49,9 @@ namespace inverter.mqtt
             [JsonPropertyName("state_class")]
             //[JsonIgnore]
             public string StateClass { get; set; }
+
+            [JsonPropertyName("options")]
+            public string[] Options { get; set; }
             //[JsonIgnore]
             [JsonPropertyName("uniq_id")]
             public string UniqueId
@@ -61,7 +63,6 @@ namespace inverter.mqtt
             }
 
             [JsonPropertyName("dev")]
-            //[JsonIgnore]
             public Device device { get; set; }
             [JsonIgnore]
             public int UpdatePeriod { get; set; }
@@ -69,6 +70,10 @@ namespace inverter.mqtt
             public MQTT Config { get; set; }
         }
 
+
+        static string[] output_options = new string[] {"USB","SUB","SBU"};
+        static string[] charge_options = new string[] {"Grid First","Solar First","Solar - Grid", "Only Solar"};
+        static string[] inverter_mode = new string[] {"Power On","Standby","Line in", "Battery", "Fault", "Power Saving"};
 
         public SensorConfig[] sensorValues = new SensorConfig[] {
             new SensorConfig { Name =  "pv_in_voltage", FriendlyName="Solar Panel Voltage",  UnitOfMeasure = "V", DeviceClass = "voltage",   StateClass="measurement", UpdatePeriod = 6 }, // 0
@@ -82,15 +87,15 @@ namespace inverter.mqtt
             new SensorConfig { Name =  "battery_charge_current", FriendlyName="Battery Charge Current", UnitOfMeasure = "A", DeviceClass= "current", StateClass="measurement",  UpdatePeriod = 1 }, //8
             new SensorConfig { Name =  "battery_discharge_current", FriendlyName = "Battery Discharge Current",  UnitOfMeasure = "A", DeviceClass= "current", StateClass="measurement" , UpdatePeriod = 1 }, // 9
             new SensorConfig { Name =  "battery_voltage", FriendlyName = "Battery Voltage",  UnitOfMeasure = "V", DeviceClass= "voltage", StateClass="measurement",  UpdatePeriod = 12 }, // 10
-            new SensorConfig { Name =  "inverter_mode", FriendlyName = "Inverter Mode", DeviceClass="enum",  UnitOfMeasure = "",  UpdatePeriod = 5 }, // 11
+            new SensorConfig { Name =  "inverter_mode", FriendlyName = "Inverter Mode", DeviceClass="enum",  Options=inverter_mode,  UnitOfMeasure = "",  UpdatePeriod = 5 }, // 11
             new SensorConfig { Name =  "time_to_charge", FriendlyName = "Battery Time To Charge ",  UnitOfMeasure = "Minutes", IconName ="mdi:timer-sand" ,  UpdatePeriod = 1 }, // 12
             new SensorConfig { Name =  "time_to_discharge", FriendlyName = "Battery Time To Discharge ",  UnitOfMeasure = "Minutes", IconName ="mdi:timer-sand" ,  UpdatePeriod = 1 }, // 13
             new SensorConfig { Name =  "grid_voltage", FriendlyName = "Grid Voltage ",  UnitOfMeasure = "V", DeviceClass= "voltage", StateClass="measurement", UpdatePeriod = 3 } // 14
         };
 
         public SensorConfig[] userValues = new SensorConfig[] {
-            new SensorConfig { Name =  "output_priority", FriendlyName = "Output Priority", DeviceClass="enum",  UnitOfMeasure = "",  UpdatePeriod = 5 }, // 0
-            new SensorConfig { Name =  "charge_priority", FriendlyName = "Charge Priority", DeviceClass="enum", UnitOfMeasure = "",  UpdatePeriod = 5 } // 1
+            new SensorConfig { Name =  "output_priority", FriendlyName = "Output Priority", DeviceClass="enum", Options=output_options,  UnitOfMeasure = "",  UpdatePeriod = 5 }, // 0
+            new SensorConfig { Name =  "charge_priority", FriendlyName = "Charge Priority", DeviceClass="enum", Options=charge_options, UnitOfMeasure = "",  UpdatePeriod = 5 } // 1
         };
 
 
