@@ -176,7 +176,7 @@ namespace inverter.mqtt
 
                 _logger.Log(LogLevel.Information, "Sending...{0}:{1}", sensorConfigTopic, JsonSerializer.Serialize(sensor, options));
 
-                MqttClient.Publish(sensorConfigTopic, Encoding.UTF8.GetBytes(JsonSerializer.Serialize(sensor, options)));
+                MqttClient.Publish(sensorConfigTopic, Encoding.UTF8.GetBytes(JsonSerializer.Serialize(sensor, options)), 0, true);
             }
 
             foreach (SensorConfig sensor in userValues)
@@ -187,7 +187,7 @@ namespace inverter.mqtt
                 sensor.device = sensorDevice;
                 _logger.Log(LogLevel.Information, "Sending...{0}:{1}", sensorConfigTopic, JsonSerializer.Serialize(sensor, options));
 
-                MqttClient.Publish(sensorConfigTopic, Encoding.UTF8.GetBytes(JsonSerializer.Serialize(sensor, options)));
+                MqttClient.Publish(sensorConfigTopic, Encoding.UTF8.GetBytes(JsonSerializer.Serialize(sensor, options)), 0 , true);
             }            
         }
 
